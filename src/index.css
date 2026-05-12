@@ -130,6 +130,11 @@
   100% { transform: rotate(360deg); }
 }
 
+.node-sweep-overlay {
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(165,243,252,0.9), rgba(255,255,255,0));
+  filter: blur(2px);
+}
+
 .neon-border-wrapper {
   position: relative;
   overflow: hidden;

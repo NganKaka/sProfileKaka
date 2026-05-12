@@ -208,23 +208,35 @@ export default function AcademicTimeline() {
 }
 
 function TimelineNode({ index, progress, nodePoint }: { index: number; progress: MotionValue<number>; nodePoint: number }) {
-  const active = useTransform(progress, (value) => {
-    return value >= nodePoint - 0.01 ? 1 : 0;
+  const completed = useTransform(progress, (value) => (value >= nodePoint - 0.01 ? 1 : 0));
+  const touch = useTransform(progress, (value) => {
+    const radius = 0.02;
+    if (value < nodePoint - radius || value > nodePoint + radius) return 0;
+    const distance = Math.abs(value - nodePoint);
+    return 1 - distance / radius;
   });
-  const glowOpacity = useTransform(active, [0, 1], [0, 1]);
-  const glowScale = useTransform(active, [0, 1], [1, 1.08]);
-  const borderColor = useTransform(active, [0, 1], ['rgba(187,201,208,0.18)', 'rgba(34,211,238,0.95)']);
-  const boxShadow = useTransform(active, [0, 1], ['0 0 0 rgba(0,0,0,0)', '0 0 18px rgba(34,211,238,0.55)']);
-  const numberColor = useTransform(active, [0, 1], ['rgba(233,195,73,0.72)', 'rgba(255,255,255,0.98)']);
+
+  const borderColor = useTransform(completed, [0, 1], ['rgba(187,201,208,0.18)', 'rgba(34,211,238,0.95)']);
+  const baseShadow = useTransform(completed, [0, 1], ['0 0 0 rgba(0,0,0,0)', '0 0 14px rgba(34,211,238,0.4)']);
+  const numberColor = useTransform(completed, [0, 1], ['rgba(233,195,73,0.72)', 'rgba(255,255,255,0.98)']);
+
+  const touchScale = useTransform(touch, [0, 1], [1, 1.12]);
+  const touchRingOpacity = useTransform(touch, [0, 1], [0, 1]);
+  const sweepOpacity = useTransform(touch, [0, 1], [0, 0.95]);
+  const sweepY = useTransform(touch, [0, 1], ['-130%', '130%']);
 
   return (
     <motion.div
-      style={{ borderColor, boxShadow }}
-      className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background/90"
+      style={{ borderColor, boxShadow: baseShadow, scale: touchScale }}
+      className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background/90 overflow-hidden"
     >
       <motion.span
-        style={{ opacity: glowOpacity, scale: glowScale }}
-        className="absolute inset-0 rounded-full border border-cyan-300/70"
+        style={{ opacity: touchRingOpacity }}
+        className="absolute inset-0 rounded-full border border-cyan-200/85"
+      />
+      <motion.span
+        style={{ opacity: sweepOpacity, y: sweepY }}
+        className="node-sweep-overlay absolute left-0 right-0 h-[60%]"
       />
       <motion.span style={{ color: numberColor }} className="relative z-10 font-tech text-[10px] font-bold">
         {String(index + 1).padStart(2, '0')}
@@ -290,11 +302,10 @@ function TimelineImageCollage({
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-              {imageIndex === 2 && (
-                <div className="absolute left-4 bottom-4 font-tech text-[10px] uppercase tracking-[0.18em] text-primary/85">
-                  Tap to expand
-                </div>
-              )}
+              <div className="absolute inset-0 bg-cyan-400/8 opacity-0 group-hover:opacity-100 transition-opacity duration-250" />
+              <div className="absolute left-4 bottom-4 translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-250 font-tech text-[10px] uppercase tracking-[0.16em] text-cyan-100">
+                Click to view full screen
+              </div>
             </div>
           </button>
         );

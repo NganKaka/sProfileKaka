@@ -1,0 +1,51 @@
+export const profile = {
+  name: 'Vo Hoang Ngan',
+  title: 'Frontend Developer · UI Storyteller',
+  tagline: ['Designing cinematic interfaces', 'Building polished web experiences', 'Turning ideas into immersive products'],
+  summary: 'I build visually rich web experiences with strong interface systems, motion, and product storytelling. This site is my personal hub for work, profile, and featured projects.',
+  about: 'I enjoy crafting interfaces that feel premium, memorable, and intuitive. My work usually combines strong visual direction, modern frontend engineering, and a lot of care around interaction details.',
+  location: 'Vietnam',
+  email: 'vohoangngan85@gmail.com',
+  tripSiteUrl: 'https://s-trip-kaka.vercel.app',
+  socials: [
+    { label: 'GitHub', href: 'https://github.com/NganKaka' },
+    { label: 'Facebook', href: 'https://www.facebook.com/hoang.ngan.399/' },
+    { label: 'Email', href: 'mailto:vohoangngan85@gmail.com' },
+  ],
+  stats: [
+    { label: 'Projects', value: '08+' },
+    { label: 'UI Focus', value: '100%' },
+    { label: 'Signature', value: 'Motion + Glass' },
+  ],
+  skills: [
+    { title: 'Frontend Engineering', body: 'React, TypeScript, Vite, component architecture, responsive systems.' },
+    { title: 'Visual Design Systems', body: 'Dark themes, glassmorphism, token-driven styling, reusable UI patterns.' },
+    { title: 'Interaction & Motion', body: 'Framer Motion, transitions, hover states, immersive microinteractions.' },
+  ],
+  projects: [
+    {
+      title: 'sTripKaka',
+      meta: 'Featured Live Project',
+      body: 'A cinematic travel journal with immersive storytelling, dynamic galleries, chatbot guidance, and admin-managed trip content.',
+      href: 'https://s-trip-kaka.vercel.app',
+      cta: 'Visit sTripKaka',
+      featured: true,
+    },
+    {
+      title: 'Portfolio Systems',
+      meta: 'UI / Design Engineering',
+      body: 'A collection of reusable visual patterns, section systems, and premium interaction motifs for branded web experiences.',
+      href: '#contact',
+      cta: 'Let’s build one',
+      featured: false,
+    },
+    {
+      title: 'Product Storytelling UI',
+      meta: 'Concept Work',
+      body: 'Landing pages and interface concepts focused on narrative layouts, motion hierarchy, and polished visual rhythm.',
+      href: '#projects',
+      cta: 'Explore style',
+      featured: false,
+    },
+  ],
+};

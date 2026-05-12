@@ -1,6 +1,7 @@
 export const profile = {
   name: 'Vo Hoang Ngan',
   title: 'Frontend Developer · UI Storyteller',
+  heroImage: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=1200&q=80',
   tagline: ['Designing cinematic interfaces', 'Building polished web experiences', 'Turning ideas into immersive products'],
   summary: 'I build visually rich web experiences with strong interface systems, motion, and product storytelling. This site is my personal hub for work, profile, and featured projects.',
   about: 'I enjoy crafting interfaces that feel premium, memorable, and intuitive. My work usually combines strong visual direction, modern frontend engineering, and a lot of care around interaction details.',
@@ -23,7 +24,11 @@ export const profile = {
       title: 'Foundation & Learning Discipline',
       institution: 'Early academic stage',
       story: 'I built a strong learning routine and trained myself to study with consistency. This phase taught me how to break complex topics into simple daily progress.',
-      image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1400&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=80',
+      ],
       highlights: ['Study habits', 'Structured note-taking', 'Long-term discipline'],
     },
     {
@@ -31,7 +36,11 @@ export const profile = {
       title: 'Exploration & Academic Growth',
       institution: 'Project and coursework expansion',
       story: 'I moved from pure theory to practical assignments and collaborative projects. I started connecting classroom concepts with real product thinking and presentation skills.',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80',
+      ],
       highlights: ['Team collaboration', 'Applied coursework', 'Research mindset'],
     },
     {
@@ -39,7 +48,11 @@ export const profile = {
       title: 'Build Phase: Frontend & Product Storytelling',
       institution: 'Self-driven specialization',
       story: 'I focused deeply on frontend engineering and visual systems. I practiced turning ideas into polished interfaces, combining code quality with user experience and narrative flow.',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',
+      ],
       highlights: ['React + TypeScript', 'UI systems', 'Motion design'],
     },
     {
@@ -47,7 +60,11 @@ export const profile = {
       title: 'Direction & Portfolio Execution',
       institution: 'Current chapter',
       story: 'I am now packaging my academic and practical journey into portfolio products. The goal is to build memorable, high-quality digital experiences that communicate both craft and clarity.',
-      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1400&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80',
+      ],
       highlights: ['Portfolio curation', 'Real-world delivery', 'Creative engineering'],
     },
   ],

@@ -34,14 +34,14 @@ export default function Hero() {
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        animate={{ opacity: 1, y: [0, -16, 0] }}
+        transition={{ opacity: { duration: 0.6, ease: 'easeOut' }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
         className="relative mx-auto w-full max-w-md"
       >
         <div className="glass-card rounded-3xl p-4 md:p-5 ambient-shadow">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
             <FadeInImage
-              src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=1200&q=80"
+              src={profile.heroImage}
               alt={profile.name}
               loading="eager"
               fetchPriority="high"

@@ -1,9 +1,86 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { profile } from '../data/profile';
 import FadeInImage from '../lib/FadeInImage';
 import SectionHeading from './ui/SectionHeading';
 
+type TimelineItem = typeof profile.academicTimeline[number];
+type ActiveTimelineImage = {
+  src: string;
+  alt: string;
+  timelineIndex: number;
+  imageIndex: number;
+};
+
 export default function AcademicTimeline() {
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const nodeRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [nodePoints, setNodePoints] = useState<number[]>([]);
+  const [activeImage, setActiveImage] = useState<ActiveTimelineImage | null>(null);
+  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ['start 80%', 'end 20%'] });
+  const traceScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  const galleryImages = useMemo(
+    () =>
+      profile.academicTimeline.flatMap((item, timelineIndex) =>
+        item.images.map((src, imageIndex) => ({
+          src,
+          alt: `${item.title} ${imageIndex + 1}`,
+          timelineIndex,
+          imageIndex,
+        })),
+      ),
+    [],
+  );
+
+  const activeImageIndex = useMemo(() => {
+    if (!activeImage) return -1;
+    return galleryImages.findIndex(
+      (img) => img.src === activeImage.src && img.timelineIndex === activeImage.timelineIndex && img.imageIndex === activeImage.imageIndex,
+    );
+  }, [activeImage, galleryImages]);
+
+  useEffect(() => {
+    const measure = () => {
+      const container = timelineRef.current;
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      const totalHeight = Math.max(containerRect.height, 1);
+      const nextPoints = nodeRefs.current.map((node) => {
+        if (!node) return 0;
+        const nodeRect = node.getBoundingClientRect();
+        const center = nodeRect.top - containerRect.top + nodeRect.height / 2;
+        return Math.max(0, Math.min(1, center / totalHeight));
+      });
+      setNodePoints(nextPoints);
+    };
+
+    const frame = requestAnimationFrame(measure);
+    window.addEventListener('resize', measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!activeImage) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveImage(null);
+      if (event.key === 'ArrowRight') navigateImage(1);
+      if (event.key === 'ArrowLeft') navigateImage(-1);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [activeImage, activeImageIndex, galleryImages]);
+
+  const navigateImage = (direction: -1 | 1) => {
+    if (activeImageIndex < 0) return;
+    const nextIndex = (activeImageIndex + direction + galleryImages.length) % galleryImages.length;
+    setActiveImage(galleryImages[nextIndex]);
+  };
+
   return (
     <section id="academics" className="space-y-8 scroll-mt-28">
       <SectionHeading
@@ -12,8 +89,12 @@ export default function AcademicTimeline() {
         subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
       />
 
-      <div className="relative">
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/40 to-cyan-300/0 md:left-1/2" />
+      <div ref={timelineRef} className="relative">
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/35 to-cyan-300/0 md:left-1/2" />
+        <motion.div
+          style={{ scaleY: traceScale }}
+          className="absolute left-4 top-0 bottom-0 w-[2px] origin-top bg-gradient-to-b from-primary via-cyan-300 to-transparent shadow-[0_0_14px_rgba(34,211,238,0.65)] md:left-1/2"
+        />
 
         <div className="space-y-10 md:space-y-14">
           {profile.academicTimeline.map((item, index) => {
@@ -29,24 +110,128 @@ export default function AcademicTimeline() {
               >
                 <TimelineStory item={item} index={index} className={reversed ? 'md:col-start-3' : 'md:col-start-1'} />
 
-                <div className="absolute left-0 top-6 md:static md:col-start-2 md:row-start-1 flex justify-center">
-                  <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-background shadow-[0_0_22px_rgba(233,195,73,0.35)]">
-                    <span className="font-tech text-[10px] font-bold text-primary">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="absolute inset-0 rounded-full border border-cyan-300/20 animate-ping" />
-                  </div>
+                <div
+                  ref={(node) => {
+                    nodeRefs.current[index] = node;
+                  }}
+                  className="absolute left-0 top-6 md:static md:col-start-2 md:row-start-1 flex justify-center"
+                >
+                  <TimelineNode progress={scrollYProgress} nodePoint={nodePoints[index] ?? 0} index={index} />
                 </div>
 
-                <TimelineImage item={item} className={reversed ? 'md:col-start-1 md:row-start-1' : 'md:col-start-3'} />
+                <TimelineImageCollage
+                  item={item}
+                  timelineIndex={index}
+                  className={reversed ? 'md:col-start-1 md:row-start-1' : 'md:col-start-3'}
+                  onOpenImage={(imageIndex) =>
+                    setActiveImage({
+                      src: item.images[imageIndex],
+                      alt: `${item.title} ${imageIndex + 1}`,
+                      timelineIndex: index,
+                      imageIndex,
+                    })
+                  }
+                />
               </motion.article>
             );
           })}
         </div>
       </div>
+
+      <AnimatePresence>
+        {activeImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[120] bg-background/92 backdrop-blur-md"
+            onClick={() => setActiveImage(null)}
+          >
+            <div className="absolute inset-0 flex items-center justify-center p-4 md:p-10">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.96 }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveImage(null);
+                }}
+                className="absolute top-6 right-6 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-secondary/80 hover:text-white hover:border-cyan-300/40 transition-all"
+                aria-label="Close image"
+              >
+                <X size={18} />
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.96 }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  navigateImage(-1);
+                }}
+                className="absolute left-4 md:left-8 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-secondary/80 hover:text-white hover:border-cyan-300/40 transition-all"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={18} />
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.96 }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  navigateImage(1);
+                }}
+                className="absolute right-4 md:right-8 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-secondary/80 hover:text-white hover:border-cyan-300/40 transition-all"
+                aria-label="Next image"
+              >
+                <ChevronRight size={18} />
+              </motion.button>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                onClick={(event) => event.stopPropagation()}
+                className="max-w-6xl w-full"
+              >
+                <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_0_40px_rgba(0,0,0,0.45)]">
+                  <img src={activeImage.src} alt={activeImage.alt} className="w-full max-h-[82vh] object-contain bg-black/20" />
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
-type TimelineItem = typeof profile.academicTimeline[number];
+function TimelineNode({ index, progress, nodePoint }: { index: number; progress: MotionValue<number>; nodePoint: number }) {
+  const active = useTransform(progress, (value) => {
+    return value >= nodePoint - 0.01 ? 1 : 0;
+  });
+  const glowOpacity = useTransform(active, [0, 1], [0, 1]);
+  const glowScale = useTransform(active, [0, 1], [1, 1.08]);
+  const borderColor = useTransform(active, [0, 1], ['rgba(187,201,208,0.18)', 'rgba(34,211,238,0.95)']);
+  const boxShadow = useTransform(active, [0, 1], ['0 0 0 rgba(0,0,0,0)', '0 0 18px rgba(34,211,238,0.55)']);
+  const numberColor = useTransform(active, [0, 1], ['rgba(233,195,73,0.72)', 'rgba(255,255,255,0.98)']);
+
+  return (
+    <motion.div
+      style={{ borderColor, boxShadow }}
+      className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background/90"
+    >
+      <motion.span
+        style={{ opacity: glowOpacity, scale: glowScale }}
+        className="absolute inset-0 rounded-full border border-cyan-300/70"
+      />
+      <motion.span style={{ color: numberColor }} className="relative z-10 font-tech text-[10px] font-bold">
+        {String(index + 1).padStart(2, '0')}
+      </motion.span>
+    </motion.div>
+  );
+}
 
 function TimelineStory({ item, index, className }: { item: TimelineItem; index: number; className?: string }) {
   return (
@@ -71,20 +256,49 @@ function TimelineStory({ item, index, className }: { item: TimelineItem; index: 
   );
 }
 
-function TimelineImage({ item, className }: { item: TimelineItem; className?: string }) {
+function TimelineImageCollage({
+  item,
+  timelineIndex,
+  className,
+  onOpenImage,
+}: {
+  item: TimelineItem;
+  timelineIndex: number;
+  className?: string;
+  onOpenImage: (imageIndex: number) => void;
+}) {
   return (
-    <div className={`group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ambient-shadow ${className || ''}`}>
-      <div className="relative h-64 md:h-72 overflow-hidden">
-        <FadeInImage
-          src={item.image}
-          alt={item.title}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
-        <div className="absolute left-4 bottom-4 font-tech text-[10px] uppercase tracking-[0.18em] text-primary/85">
-          Academic archive
-        </div>
-      </div>
+    <div className={`grid grid-cols-2 gap-3 ${className || ''}`}>
+      {item.images.map((src, imageIndex) => {
+        const wrappers = [
+          'col-span-2',
+          'md:translate-y-2',
+          'md:translate-y-7',
+        ];
+        const heights = ['h-48 md:h-52', 'h-32 md:h-36', 'h-32 md:h-36'];
+        return (
+          <button
+            key={`${timelineIndex}-${imageIndex}`}
+            type="button"
+            onClick={() => onOpenImage(imageIndex)}
+            className={`group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ambient-shadow text-left ${wrappers[imageIndex]}`}
+          >
+            <div className={`relative ${heights[imageIndex]} overflow-hidden`}>
+              <FadeInImage
+                src={src}
+                alt={`${item.title} ${imageIndex + 1}`}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+              {imageIndex === 2 && (
+                <div className="absolute left-4 bottom-4 font-tech text-[10px] uppercase tracking-[0.18em] text-primary/85">
+                  Tap to expand
+                </div>
+              )}
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }

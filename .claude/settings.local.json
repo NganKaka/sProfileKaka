@@ -8,7 +8,8 @@
       "Bash(vercel --version)",
       "Bash(git push *)",
       "Bash(vercel --prod)",
-      "PowerShell(New-Item *)"
+      "PowerShell(New-Item *)",
+      "Bash(curl *)"
     ]
   }
 }

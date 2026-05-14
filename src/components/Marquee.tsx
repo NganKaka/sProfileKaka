@@ -69,7 +69,7 @@ export default function Marquee({
                 {item.label}
               </span>
             )}
-            {separator && (
+            {separator && separator !== '' && (
               <span className="text-primary text-3xl md:text-5xl font-black opacity-40">{separator}</span>
             )}
           </div>

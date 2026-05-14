@@ -13,7 +13,7 @@ type ActiveTimelineImage = {
   imageIndex: number;
 };
 
-export default function AcademicTimeline() {
+export default function AcademicTimeline({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const nodeRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [nodePoints, setNodePoints] = useState<number[]>([]);
@@ -63,6 +63,10 @@ export default function AcademicTimeline() {
       window.removeEventListener('resize', measure);
     };
   }, []);
+
+  useEffect(() => {
+    onImageModalChange?.(Boolean(activeImage));
+  }, [activeImage, onImageModalChange]);
 
   useEffect(() => {
     if (!activeImage) return;

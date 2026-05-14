@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Constellations from './components/Constellations';
 import SiteNavbar from './components/SiteNavbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import AcademicTimeline from './components/AcademicTimeline';
+import ExperienceTimeline from './components/ExperienceTimeline';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
-import Contact from './components/Contact';
 import SiteFooter from './components/SiteFooter';
 import ScrollCompass from './components/ScrollCompass';
 import BackToTopButton from './components/BackToTopButton';
@@ -34,23 +35,26 @@ function AppBackground() {
 
 export default function App() {
   const showBackToTop = useBackToTop();
+  const [heroImageModalOpen, setHeroImageModalOpen] = useState(false);
+  const [academicImageModalOpen, setAcademicImageModalOpen] = useState(false);
+  const imageModalOpen = heroImageModalOpen || academicImageModalOpen;
 
   return (
     <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
       <SiteNavbar />
       <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
-        <Hero />
+        <Hero onImageModalChange={setHeroImageModalOpen} />
         <About />
-        <AcademicTimeline />
+        <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />
+        <ExperienceTimeline />
         <Skills />
         <Projects />
-        <Contact />
       </main>
       <div className="relative z-10">
         <SiteFooter />
       </div>
-      <ScrollCompass />
-      <BackToTopButton visible={showBackToTop} />
+      {!imageModalOpen && <ScrollCompass />}
+      <BackToTopButton visible={showBackToTop && !imageModalOpen} />
       <AppBackground />
     </div>
   );

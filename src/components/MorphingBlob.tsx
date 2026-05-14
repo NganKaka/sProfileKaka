@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const blobPaths = [
@@ -30,19 +29,24 @@ export default function MorphingBlob({
   }, [duration]);
 
   return (
-    <div className={`absolute pointer-events-none ${className}`} style={{ width: size, height: size }}>
+    <div
+      className={`absolute pointer-events-none ${className}`}
+      style={{
+        width: size,
+        height: size,
+        transition: `transform ${duration}s ease-in-out, opacity ${duration}s ease-in-out`,
+      }}
+    >
       <svg
         viewBox="-100 -100 200 200"
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-full"
-        style={{ filter: 'blur(40px)' }}
+        style={{
+          filter: 'blur(40px)',
+          transition: `opacity ${duration}s ease-in-out`,
+        }}
       >
-        <motion.path
-          fill={color}
-          d={blobPaths[pathIndex]}
-          animate={{ d: blobPaths[pathIndex] }}
-          transition={{ duration, ease: 'easeInOut' }}
-        />
+        <path fill={color} d={blobPaths[pathIndex]} />
       </svg>
     </div>
   );

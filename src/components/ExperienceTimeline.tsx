@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContentList } from '../hooks/useContent';
 import { experienceSchema, type Experience } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
+import { TimelineSkeleton } from './LoadingSkeleton';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -80,9 +81,7 @@ export default function ExperienceTimeline() {
           title="Work timeline"
           subtitle="Professional milestones across product delivery, frontend engineering, and interface storytelling."
         />
-        <div className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-        </div>
+        <TimelineSkeleton count={5} />
       </section>
     );
   }

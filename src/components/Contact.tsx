@@ -7,6 +7,7 @@ import { useState } from ‘react’;
 import SectionHeading from ‘./ui/SectionHeading’;
 import { profile } from ‘../data/profile’;
 import { trackContactFormSubmit } from ‘../lib/analytics’;
+import { useToast } from ‘../contexts/ToastContext’;
 
 const contactSchema = z.object({
   name: z.string().min(2, ‘Name must be at least 2 characters’),
@@ -25,6 +26,7 @@ const iconMap = {
 
 export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<’idle’ | ‘loading’ | ‘success’ | ‘error’>(‘idle’);
+  const { showToast } = useToast();
 
   const {
     register,
@@ -50,15 +52,18 @@ export default function Contact() {
       if (response.ok) {
         setSubmitStatus(‘success’);
         trackContactFormSubmit(true);
+        showToast(‘Message sent successfully! I\’ll get back to you soon.’, ‘success’);
         reset();
         setTimeout(() => setSubmitStatus(‘idle’), 5000);
       } else {
         setSubmitStatus(‘error’);
         trackContactFormSubmit(false);
+        showToast(‘Failed to send message. Please try again.’, ‘error’);
       }
     } catch (error) {
       setSubmitStatus(‘error’);
       trackContactFormSubmit(false);
+      showToast(‘Failed to send message. Please try again.’, ‘error’);
     }
   };
 

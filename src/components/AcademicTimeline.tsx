@@ -5,6 +5,7 @@ import { useContentList } from '../hooks/useContent';
 import { academicSchema, type Academic } from '../schemas/content';
 import FadeInImage from '../lib/FadeInImage';
 import SectionHeading from './ui/SectionHeading';
+import { AcademicTimelineSkeleton } from './LoadingSkeleton';
 
 type ActiveTimelineImage = {
   src: string;
@@ -107,9 +108,7 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
           title="Learning timeline"
           subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
         />
-        <div className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-        </div>
+        <AcademicTimelineSkeleton count={4} />
       </section>
     );
   }

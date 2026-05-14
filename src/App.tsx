@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
+import PageTransition, { SectionTransition } from './components/PageTransition';
 import Constellations from './components/Constellations';
 import SiteNavbar from './components/SiteNavbar';
 import Hero from './components/Hero';
@@ -40,30 +42,58 @@ export default function App() {
   const imageModalOpen = heroImageModalOpen || academicImageModalOpen;
 
   return (
-    <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
-      {/* Skip Navigation */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-background focus:rounded-lg focus:font-bold"
-      >
-        Skip to main content
-      </a>
+    <ErrorBoundary>
+      <PageTransition>
+        <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
+          {/* Skip Navigation */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-background focus:rounded-lg focus:font-bold"
+          >
+            Skip to main content
+          </a>
 
-      <SiteNavbar />
-      <main id="main-content" className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
-        <Hero onImageModalChange={setHeroImageModalOpen} />
-        <About />
-        <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />
-        <ExperienceTimeline />
-        <Skills />
-        <Projects />
-      </main>
-      <div className="relative z-10">
-        <SiteFooter />
-      </div>
-      {!imageModalOpen && <ScrollCompass />}
-      <BackToTopButton visible={showBackToTop && !imageModalOpen} />
-      <AppBackground />
-    </div>
+          <SiteNavbar />
+          <main id="main-content" className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
+            <ErrorBoundary>
+              <SectionTransition>
+                <Hero onImageModalChange={setHeroImageModalOpen} />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.1}>
+                <About />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.2}>
+                <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.1}>
+                <ExperienceTimeline />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.1}>
+                <Skills />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.1}>
+                <Projects />
+              </SectionTransition>
+            </ErrorBoundary>
+          </main>
+          <div className="relative z-10">
+            <SiteFooter />
+          </div>
+          {!imageModalOpen && <ScrollCompass />}
+          <BackToTopButton visible={showBackToTop && !imageModalOpen} />
+          <AppBackground />
+        </div>
+      </PageTransition>
+    </ErrorBoundary>
   );
 }

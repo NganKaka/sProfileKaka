@@ -4,6 +4,7 @@ import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
 import { trackProjectClick } from '../lib/analytics';
+import { ProjectGridSkeleton } from './LoadingSkeleton';
 
 function ProjectAction({ href, label, variant, projectTitle }: { href: string; label: string; variant: 'live' | 'code' | 'case'; projectTitle: string }) {
   const Icon = variant === 'live' ? ExternalLink : variant === 'code' ? Code2 : FileText;
@@ -131,9 +132,7 @@ export default function Projects() {
           title="Featured work"
           subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
         />
-        <div className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-        </div>
+        <ProjectGridSkeleton count={3} />
       </section>
     );
   }

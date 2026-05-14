@@ -6,6 +6,7 @@ import TerminalBoot from './ui/TerminalBoot';
 import TypingText from './ui/TypingText';
 import FadeInImage from '../lib/FadeInImage';
 import { AnimatedCounter } from './AdvancedAnimations';
+import MorphingBlob from './MorphingBlob';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -32,7 +33,11 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
 
 
   return (
-    <section id="hero" className="pt-12 md:pt-20 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+    <section id="hero" className="relative pt-12 md:pt-20 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+      {/* Ambient morphing blobs */}
+      <MorphingBlob className="-top-20 -left-20 -z-10" color="rgba(233, 195, 73, 0.12)" size={500} duration={10} />
+      <MorphingBlob className="-bottom-20 -right-20 -z-10" color="rgba(34, 211, 238, 0.1)" size={400} duration={12} />
+
       <div className="space-y-7">
         <div className="space-y-2">
           <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">

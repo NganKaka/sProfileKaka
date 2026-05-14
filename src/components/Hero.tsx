@@ -7,10 +7,9 @@ import TypingText from './ui/TypingText';
 import GradientText from './ui/GradientText';
 import CursorAware from './ui/CursorAware';
 import MagneticButton from './ui/MagneticButton';
+import SplitFlapCounter from './ui/SplitFlapCounter';
 import FadeInImage from '../lib/FadeInImage';
-import { AnimatedCounter } from './AdvancedAnimations';
 import MorphingBlob from './MorphingBlob';
-import RippleButton from './ui/RippleButton';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -74,12 +73,6 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {profile.stats.map((stat) => {
-            // Parse number from value if possible
-            const numericMatch = stat.value.match(/^(\d+)(.*)$/);
-            const isNumeric = !!numericMatch;
-            const numValue = isNumeric ? parseInt(numericMatch[1], 10) : 0;
-            const suffix = isNumeric ? numericMatch[2] : '';
-
             return (
               <CursorAware key={stat.label} range={250} leanAmount={4}>
                 <motion.div
@@ -90,11 +83,7 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
                 >
                   <p className="text-[10px] uppercase tracking-[0.14em] text-secondary/60 font-tech">{stat.label}</p>
                   <p className="mt-1 font-headline text-lg font-bold text-on-surface">
-                    {isNumeric ? (
-                      <AnimatedCounter end={numValue} suffix={suffix} duration={2} />
-                    ) : (
-                      stat.value
-                    )}
+                    <SplitFlapCounter value={stat.value} />
                   </p>
                 </motion.div>
               </CursorAware>

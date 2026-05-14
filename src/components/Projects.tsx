@@ -1,5 +1,6 @@
 import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText, Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { useContentList } from '../hooks/useContent';
 import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
@@ -263,16 +264,42 @@ export default function Projects() {
       </div>
 
       {filteredProjects.length > 0 && (
-        <div className="space-y-6 perspective-1000">
-          {featuredProject && <ProjectCard project={featuredProject.data} featured />}
-          <div className="grid gap-6 md:grid-cols-2">
-            {secondaryProjects.map((project) => (
-              <TiltCard key={project.data.title} intensity={6} className="h-full">
-                <ProjectCard project={project.data} />
-              </TiltCard>
-            ))}
+        <LayoutGroup>
+          <div className="space-y-6 perspective-1000">
+            <AnimatePresence mode="popLayout">
+              {featuredProject && (
+                <motion.div
+                  key={featuredProject.data.title}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <ProjectCard project={featuredProject.data} featured />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="grid gap-6 md:grid-cols-2">
+              <AnimatePresence mode="popLayout">
+                {secondaryProjects.map((project) => (
+                  <motion.div
+                    key={project.data.title}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <TiltCard intensity={6} className="h-full">
+                      <ProjectCard project={project.data} />
+                    </TiltCard>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
+        </LayoutGroup>
       )}
     </section>
   );

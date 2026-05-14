@@ -10,7 +10,6 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import AcademicTimeline from '../components/AcademicTimeline';
 import ExperienceTimeline from '../components/ExperienceTimeline';
-import ProcessScrollytell from '../components/ProcessScrollytell';
 import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Testimonials from '../components/Testimonials';
@@ -109,9 +108,6 @@ export default function Home() {
           <SectionTransition delay={0.1}>
             <ExperienceTimeline />
           </SectionTransition>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <ProcessScrollytell />
         </ErrorBoundary>
         <ErrorBoundary>
           <SectionTransition delay={0.1}>

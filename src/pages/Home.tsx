@@ -13,6 +13,7 @@ import ExperienceTimeline from '../components/ExperienceTimeline';
 import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Testimonials from '../components/Testimonials';
+import Marquee from '../components/Marquee';
 import SiteFooter from '../components/SiteFooter';
 import ScrollCompass from '../components/ScrollCompass';
 import BackToTopButton from '../components/BackToTopButton';
@@ -82,6 +83,18 @@ export default function Home() {
             <About />
           </SectionTransition>
         </ErrorBoundary>
+      </main>
+
+      {/* Marquee tech stack */}
+      <div className="relative z-10 my-16">
+        <Marquee
+          items={['React', 'TypeScript', 'Python', 'PostgreSQL', 'Docker', 'Java', 'Vite', 'Tailwind', 'Framer Motion', 'AI/ML']}
+          speed={40}
+          separator="·"
+        />
+      </div>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-20 space-y-24">
         <ErrorBoundary>
           <SectionTransition delay={0.2}>
             <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />

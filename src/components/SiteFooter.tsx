@@ -13,7 +13,7 @@ export default function SiteFooter() {
   const [showSupportOptions, setShowSupportOptions] = useState(false);
 
   return (
-    <footer className="w-full bg-background border-t border-white/10 pt-12 pb-28 px-6 md:px-12 mt-8 relative z-50">
+    <footer className="w-full bg-background border-t dark:border-white/10 light:border-black/10 pt-12 pb-28 px-6 md:px-12 mt-8 relative z-50">
       <div className="max-w-5xl mx-auto flex flex-col items-center gap-6 text-center">
         <motion.h2
           initial={{ opacity: 0, y: 10 }}

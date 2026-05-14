@@ -130,22 +130,22 @@ export default function TerminalBoot() {
       <div className="p-4 md:p-5 space-y-1.5 min-h-[240px]" aria-label="Terminal boot sequence">
         {displayed.map((row, i) => (
           <div key={i} className="flex flex-wrap gap-x-2 leading-relaxed">
-            <span className="text-cyan-400 shrink-0">{row.prompt || ' '}</span>
+            <span className="text-cyan-300/80 shrink-0">{row.prompt || ' '}</span>
             {row.isPromptDone && (
-              <span className="text-green-400 transition-opacity duration-150">
+              <span className="text-green-300/80 transition-opacity duration-150">
                 {row.output}
                 {!row.isOutputDone && <span className="animate-pulse ml-0.5">▊</span>}
               </span>
             )}
-            {!row.isPromptDone && <span className="animate-pulse text-cyan-400">▊</span>}
+            {!row.isPromptDone && <span className="animate-pulse text-cyan-300/80">▊</span>}
           </div>
         ))}
 
         {done && (
           <div className="flex flex-wrap gap-x-2 leading-relaxed">
-            <span className="text-cyan-400 shrink-0">$</span>
-            <span className="text-cyan-300">{skipped ? 'Animation skipped.' : 'Ready.'}</span>
-            <span className="animate-pulse text-cyan-400 ml-1">▊</span>
+            <span className="text-cyan-300/80 shrink-0">$</span>
+            <span className="text-cyan-200/70">{skipped ? 'Animation skipped.' : 'Ready.'}</span>
+            <span className="animate-pulse text-cyan-300/80 ml-1">▊</span>
           </div>
         )}
       </div>

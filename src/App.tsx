@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import PageTransition, { SectionTransition } from './components/PageTransition';
+import ScrollProgress from './components/ScrollProgress';
 import Constellations from './components/Constellations';
 import SiteNavbar from './components/SiteNavbar';
 import Hero from './components/Hero';
@@ -51,6 +52,8 @@ export default function App() {
     <ErrorBoundary>
       <PageTransition>
         <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
+          <ScrollProgress />
+
           {/* Skip Navigation */}
           <a
             href="#main-content"

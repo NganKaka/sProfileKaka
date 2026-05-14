@@ -18,6 +18,13 @@ export default function SiteNavbar() {
   const [activeSection, setActiveSection] = useState('');
   const lockedTargetRef = useRef<string | null>(null);
   const lockTimeoutRef = useRef<number | null>(null);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  // Generate href - prepend "/" if not on home page
+  const getNavHref = (hash: string) => {
+    return isHomePage ? hash : `/${hash}`;
+  };
 
   const lockActiveSection = (target: string) => {
     lockedTargetRef.current = target;
@@ -115,23 +122,23 @@ export default function SiteNavbar() {
     <nav className="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-lg border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-6">
         <div className="flex justify-between items-center">
-          <a
-            href="#hero"
+          <Link
+            to="/"
             onClick={handleLogoClick}
             className="text-xl font-black text-primary tracking-tighter cursor-pointer"
           >
             sProfileKaka
-          </a>
+          </Link>
 
           <div className="hidden md:flex items-center space-x-8">
             {links.map((link) => {
-              const isActive = activeSection === link.href;
+              const isActive = isHomePage && activeSection === link.href;
               return (
                 <motion.a
                   key={link.href}
-                  href={link.href}
+                  href={getNavHref(link.href)}
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => handleSectionClick(link.href)}
+                  onClick={() => isHomePage && handleSectionClick(link.href)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`font-headline tracking-tighter uppercase text-[12px] font-bold transition-all duration-300 relative pb-1 px-2 py-1 rounded-md cursor-pointer ${
                     isActive
@@ -210,12 +217,12 @@ export default function SiteNavbar() {
                 }}
               >
                 {links.map((link) => {
-                  const isActive = activeSection === link.href;
+                  const isActive = isHomePage && activeSection === link.href;
                   return (
                     <motion.a
                       key={link.href}
-                      href={link.href}
-                      onClick={() => handleSectionClick(link.href)}
+                      href={getNavHref(link.href)}
+                      onClick={() => isHomePage && handleSectionClick(link.href)}
                       aria-current={isActive ? 'page' : undefined}
                       variants={{
                         open: { opacity: 1, x: 0 },

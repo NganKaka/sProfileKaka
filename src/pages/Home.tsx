@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { SectionTransition } from '../components/PageTransition';
 import SectionNavIndicator from '../components/SectionNavIndicator';
@@ -44,6 +45,19 @@ export default function Home() {
   const [heroImageModalOpen, setHeroImageModalOpen] = useState(false);
   const [academicImageModalOpen, setAcademicImageModalOpen] = useState(false);
   const imageModalOpen = heroImageModalOpen || academicImageModalOpen;
+  const location = useLocation();
+
+  // Scroll to section when navigating from another page with hash
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.slice(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location]);
 
   return (
     <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">

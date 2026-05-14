@@ -13,6 +13,7 @@ export default function Blog() {
     [
       '/content/blog/01-building-my-portfolio.md',
       '/content/blog/02-skeletons-vs-spinners.md',
+      '/content/blog/03-math-to-code-journey.md',
     ],
     blogPostSchema
   );

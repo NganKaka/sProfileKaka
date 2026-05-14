@@ -10,6 +10,7 @@ import SiteFooter from '../components/SiteFooter';
 const blogPaths: Record<string, string> = {
   'building-my-portfolio': '/content/blog/01-building-my-portfolio.md',
   'skeletons-vs-spinners': '/content/blog/02-skeletons-vs-spinners.md',
+  'math-to-code-journey': '/content/blog/03-math-to-code-journey.md',
 };
 
 export default function BlogPost() {

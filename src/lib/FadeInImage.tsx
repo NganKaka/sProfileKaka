@@ -17,7 +17,7 @@ export default function FadeInImage({ src, alt, className, loading = 'lazy', dec
   }, [src]);
 
   return (
-    <span className={`block transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+    <span className={`block h-full w-full transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
       <img
         key={src}
         src={src}

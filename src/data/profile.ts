@@ -82,53 +82,67 @@ export const profile = {
   ],
   academicTimeline: [
     {
-      period: '2018 — 2020',
-      title: 'Foundation & Learning Discipline',
-      institution: 'Early academic stage',
-      story: 'I built a strong learning routine and trained myself to study with consistency. This phase taught me how to break complex topics into simple daily progress.',
-      images: [
-        'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=80',
+      period: '2016 — 2020',
+      title: 'Thong Tay Hoi',
+      institution: 'Secondary school',
+      achievements: [
+        ' First Prize in HCMC Handheld Calculator Mathematics Competition.',
+        'One of only two students from the school admitted to Le Hong Phong High School for the Gifted.',
+        'Consistently ranked 1st in class and grade for multiple years.',
       ],
-      highlights: ['Study habits', 'Structured note-taking', 'Long-term discipline'],
+      images: [
+        'learning-photoes/thong-tay-hoi/tth-1.jpg',
+        'learning-photoes/thong-tay-hoi/tth-2.jpg',
+        'learning-photoes/thong-tay-hoi/tth-3.jpg',
+
+      ],
+      highlights: ['Mathematics', 'Self-learning'],
     },
     {
-      period: '2020 — 2022',
-      title: 'Exploration & Academic Growth',
-      institution: 'Project and coursework expansion',
-      story: 'I moved from pure theory to practical assignments and collaborative projects. I started connecting classroom concepts with real product thinking and presentation skills.',
-      images: [
-        'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80',
+      period: '2020 — 2023',
+      title: 'Le Hong Phong High School for the Gifted',
+      institution: 'Mathematics Specializing Class',
+      achievements: [
+        'Third Prize (2022) & Honorable Mention (2021) in the Vietnam Mathematical Olympiad (VMO).',
+        'First Prize in HCMC Mathematical Olympiad (2 consecutive years).',
+        'Silver Medal - Asia International Mathematical Olympiad (AIMO) , Gold Medal - Hong Kong International Mathematical Olympiad (HKIMO), Aluminium Compass Prize in Iranian Geometry Olympiad (IGO).',
       ],
-      highlights: ['Team collaboration', 'Applied coursework', 'Research mindset'],
+      images: [
+        'learning-photoes/le-hong-phong/lhp-3.jpg',
+        'learning-photoes/le-hong-phong/lhp-1.jpg'
+      ],
+      highlights: ['Mathematics', 'Geometry'],
     },
     {
-      period: '2022 — 2024',
-      title: 'Build Phase: Frontend & Product Storytelling',
-      institution: 'Self-driven specialization',
-      story: 'I focused deeply on frontend engineering and visual systems. I practiced turning ideas into polished interfaces, combining code quality with user experience and narrative flow.',
+      period: '2023 — 2027',
+      title: 'VNU-HCM, University of Technology',
+      institution: 'Computer Science',
+      achievements: [
+        'Academic Encouragement Scholarship - 120% & 110% Scholarships (Ranked 2nd in Faculty).',
+        'OISP Scholarship, Odon Vallet Scholarship.',
+        'IELTS 7.0 Academic.', 'Graduated one semester early (completed in 3.5 years).'
+      ],
       images: [
         'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',
       ],
-      highlights: ['React + TypeScript', 'UI systems', 'Motion design'],
+      highlights: ['CS', 'IELTS', 'Scholarship' ],
     },
     {
-      period: '2024 — Present',
-      title: 'Direction & Portfolio Execution',
-      institution: 'Current chapter',
-      story: 'I am now packaging my academic and practical journey into portfolio products. The goal is to build memorable, high-quality digital experiences that communicate both craft and clarity.',
+      period: '2026 — Present',
+      title: 'VNU-HCM, University of Technology',
+      institution: 'Master in Computer Science',
+      achievements: [
+        'Coming Soon.'
+      ],
       images: [
         'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80',
-      ],
-      highlights: ['Portfolio curation', 'Real-world delivery', 'Creative engineering'],
-    },
+    ],
+      highlights: ['Master', 'CS'],
+    }
   ],
   skills: [
     { title: 'Frontend Engineering', body: 'React, TypeScript, Vite, component architecture, responsive systems.' },

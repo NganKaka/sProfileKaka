@@ -1,14 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUpRight, X } from 'lucide-react';
+import { Facebook, Github, Mail, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { profile } from '../data/profile';
-import Typewriter from './ui/Typewriter';
-import ExternalLinkButton from './ui/ExternalLinkButton';
+import TerminalBoot from './ui/TerminalBoot';
 import FadeInImage from '../lib/FadeInImage';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
-  const featuredProject = profile.projects.find((project) => project.featured) ?? profile.projects[0];
 
   useEffect(() => {
     onImageModalChange?.(showProfileImage);
@@ -30,18 +28,31 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
   return (
     <section id="hero" className="pt-12 md:pt-20 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
       <div className="space-y-7">
-        <p className="font-tech text-[10px] uppercase tracking-[0.28em] text-secondary/60">Portfolio</p>
-
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
             {profile.name}
           </h1>
           <p className="text-lg md:text-2xl font-headline font-bold text-primary/90">{profile.title}</p>
-          <p className="text-base md:text-lg font-display text-secondary/85">
-            <Typewriter words={profile.tagline} />
-          </p>
-          <p className="text-secondary/80 max-w-xl leading-relaxed">{profile.summary}</p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            {profile.socials.map((social) => {
+              const Icon = social.label === 'GitHub' ? Github : social.label === 'Facebook' ? Facebook : Mail;
+              return (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target={social.href.startsWith('http') ? '_blank' : undefined}
+                  rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  aria-label={social.label}
+                  className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-secondary/70 transition-all hover:scale-110 hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-300"
+                >
+                  <Icon size={16} className="transition-all group-hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]" />
+                </a>
+              );
+            })}
+          </div>
         </div>
+
+        <TerminalBoot />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {profile.stats.map((stat) => (
@@ -62,34 +73,8 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
           <a href="#projects" className="shimmer-sweep bg-primary text-background px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-primary/50 shadow-[0_0_24px_rgba(233,195,73,0.55)] hover:shadow-[0_0_32px_rgba(233,195,73,0.9)] transition-shadow">
             View Projects
           </a>
-          <ExternalLinkButton
-            href={profile.tripSiteUrl}
-            label="Visit sTripKaka"
-            className="px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-cyan-300/40 bg-cyan-950/20 text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-900/30 transition-all"
-          />
         </div>
 
-        {featuredProject && (
-          <div className="glass-card rounded-2xl p-4 md:p-5 border border-primary/20 bg-primary/8">
-            <p className="font-tech text-[10px] uppercase tracking-[0.18em] text-primary">Featured project</p>
-            <h3 className="mt-2 font-headline text-xl font-bold text-on-surface">{featuredProject.title}</h3>
-            <p className="mt-2 text-sm text-secondary/80 leading-relaxed">{featuredProject.body}</p>
-            {featuredProject.outcome && (
-              <div className="mt-3 rounded-xl border border-primary/20 bg-primary/8 px-3 py-2 text-sm font-semibold text-on-surface">
-                {featuredProject.outcome}
-              </div>
-            )}
-            <a
-              href={featuredProject.href}
-              target={featuredProject.href.startsWith('http') ? '_blank' : undefined}
-              rel={featuredProject.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="mt-3 inline-flex items-center gap-2 text-primary font-tech text-[11px] uppercase tracking-[0.14em] hover:text-cyan-300 transition-colors"
-            >
-              {featuredProject.cta}
-              <ArrowUpRight size={14} />
-            </a>
-          </div>
-        )}
       </div>
 
       <motion.div

@@ -260,7 +260,17 @@ function TimelineStory({ item, index, className }: { item: TimelineItem; index: 
       </div>
       <h3 className="font-headline text-2xl font-bold text-on-surface tracking-tight">{item.title}</h3>
       <p className="mt-1 text-sm text-cyan-100/60 font-tech uppercase tracking-[0.14em]">{item.institution}</p>
-      <p className="mt-4 text-secondary/85 leading-relaxed">{item.story}</p>
+      {item.story && <p className="mt-4 text-secondary/85 leading-relaxed">{item.story}</p>}
+      {'achievements' in item && Array.isArray(item.achievements) && item.achievements.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {item.achievements.map((achievement) => (
+            <div key={achievement} className="flex items-start gap-3 rounded-xl border border-cyan-300/10 bg-cyan-400/[0.03] px-3 py-2">
+              <span className="mt-0.5 font-tech text-[11px] font-bold tracking-[0.12em] text-cyan-300">&lt;/&gt;</span>
+              <p className="text-sm leading-relaxed text-secondary/82">{achievement}</p>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="mt-5 flex flex-wrap gap-2">
         {item.highlights.map((highlight) => (
           <span key={highlight} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-tech uppercase tracking-[0.14em] text-secondary/70">
@@ -299,12 +309,14 @@ function TimelineImageCollage({
             onClick={() => onOpenImage(imageIndex)}
             className={`group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ambient-shadow text-left ${wrappers[imageIndex]}`}
           >
-            <div className={`relative ${heights[imageIndex]} overflow-hidden`}>
-              <FadeInImage
-                src={src}
-                alt={`${item.title} ${imageIndex + 1}`}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+            <div className={`relative ${heights[imageIndex]} overflow-hidden bg-black/20`}>
+              <div className="flex h-full w-full items-center justify-center p-2 md:p-3">
+                <FadeInImage
+                  src={src}
+                  alt={`${item.title} ${imageIndex + 1}`}
+                  className="h-full w-full object-contain"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
               <div className="absolute inset-0 bg-cyan-400/8 opacity-0 group-hover:opacity-100 transition-opacity duration-250" />
               <div className="absolute left-4 bottom-4 translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-250 font-tech text-[10px] uppercase tracking-[0.16em] text-cyan-100">

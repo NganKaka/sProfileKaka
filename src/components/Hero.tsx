@@ -3,6 +3,7 @@ import { Facebook, Github, Mail, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { profile } from '../data/profile';
 import TerminalBoot from './ui/TerminalBoot';
+import TypingText from './ui/TypingText';
 import FadeInImage from '../lib/FadeInImage';
 import { AnimatedCounter } from './AdvancedAnimations';
 
@@ -31,9 +32,16 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
       <div className="space-y-7">
         <div className="space-y-2">
           <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
-            {profile.name}
+            <TypingText text={profile.name} speed={80} delay={300} />
           </h1>
-          <p className="text-lg md:text-2xl font-headline font-bold text-primary/90">{profile.title}</p>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 0.6 }}
+            className="text-lg md:text-2xl font-headline font-bold text-primary/90"
+          >
+            {profile.title}
+          </motion.p>
           <div className="flex flex-wrap gap-3 pt-2">
             {profile.socials.map((social) => {
               const Icon = social.label === 'GitHub' ? Github : social.label === 'Facebook' ? Facebook : Mail;

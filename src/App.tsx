@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import PageTransition, { SectionTransition } from './components/PageTransition';
 import ScrollProgress from './components/ScrollProgress';
+import SectionNavIndicator from './components/SectionNavIndicator';
 import Constellations from './components/Constellations';
 import SiteNavbar from './components/SiteNavbar';
 import Hero from './components/Hero';
@@ -53,6 +54,7 @@ export default function App() {
       <PageTransition>
         <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
           <ScrollProgress />
+          <SectionNavIndicator />
 
           {/* Skip Navigation */}
           <a

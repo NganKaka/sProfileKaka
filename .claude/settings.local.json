@@ -5,7 +5,9 @@
       "Bash(npm run *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(vercel --version)"
+      "Bash(vercel --version)",
+      "Bash(git push *)",
+      "Bash(vercel --prod)"
     ]
   }
 }

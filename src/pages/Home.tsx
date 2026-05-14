@@ -10,11 +10,13 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import AcademicTimeline from '../components/AcademicTimeline';
 import ExperienceTimeline from '../components/ExperienceTimeline';
+import ProcessScrollytell from '../components/ProcessScrollytell';
 import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Testimonials from '../components/Testimonials';
 import Marquee from '../components/Marquee';
 import MeshGradient from '../components/MeshGradient';
+import LiquidDivider from '../components/LiquidDivider';
 import SiteFooter from '../components/SiteFooter';
 import ScrollCompass from '../components/ScrollCompass';
 import BackToTopButton from '../components/BackToTopButton';
@@ -109,6 +111,9 @@ export default function Home() {
           </SectionTransition>
         </ErrorBoundary>
         <ErrorBoundary>
+          <ProcessScrollytell />
+        </ErrorBoundary>
+        <ErrorBoundary>
           <SectionTransition delay={0.1}>
             <Skills />
           </SectionTransition>
@@ -131,6 +136,9 @@ export default function Home() {
           <SectionTransition delay={0.1}>
             <Projects />
           </SectionTransition>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <LiquidDivider color="rgba(233, 195, 73, 0.35)" height={160} />
         </ErrorBoundary>
         <ErrorBoundary>
           <SectionTransition delay={0.1}>

@@ -14,6 +14,7 @@ import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Testimonials from '../components/Testimonials';
 import Marquee from '../components/Marquee';
+import MeshGradient from '../components/MeshGradient';
 import SiteFooter from '../components/SiteFooter';
 import ScrollCompass from '../components/ScrollCompass';
 import BackToTopButton from '../components/BackToTopButton';
@@ -25,18 +26,8 @@ function AppBackground() {
       <div className="absolute inset-0 dark:bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] dark:from-[#1a364a] dark:via-background dark:to-background light:bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] light:from-[#e3f2fd] light:via-background light:to-background" />
       <div className="absolute inset-0 dark:bg-[linear-gradient(rgba(233,195,73,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(233,195,73,0.03)_1px,transparent_1px)] light:bg-[linear-gradient(rgba(184,134,11,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(184,134,11,0.08)_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_70%)]" />
 
+      <MeshGradient />
       <Constellations />
-
-      <motion.div
-        animate={{ y: [0, -30, 0], opacity: [0.6, 0.9, 0.6] }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px]"
-      />
-      <motion.div
-        animate={{ y: [0, 40, 0], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[150px]"
-      />
     </div>
   );
 }

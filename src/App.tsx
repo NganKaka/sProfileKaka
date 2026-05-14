@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import ErrorBoundary from './components/ErrorBoundary';
 import ScrollProgress from './components/ScrollProgress';
 import Spotlight from './components/Spotlight';
+import SmoothScroll from './components/SmoothScroll';
 import RouteTransition from './components/RouteTransition';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <SmoothScroll />
         <ScrollProgress />
         <Spotlight />
         <AnimatePresence mode="wait">

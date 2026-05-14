@@ -6,6 +6,7 @@ import TerminalBoot from './ui/TerminalBoot';
 import TypingText from './ui/TypingText';
 import GradientText from './ui/GradientText';
 import CursorAware from './ui/CursorAware';
+import MagneticButton from './ui/MagneticButton';
 import FadeInImage from '../lib/FadeInImage';
 import { AnimatedCounter } from './AdvancedAnimations';
 import MorphingBlob from './MorphingBlob';
@@ -102,15 +103,16 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <RippleButton
+          <MagneticButton
             onClick={() => {
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            rippleColor="rgba(13, 27, 42, 0.4)"
+            strength={0.4}
+            range={120}
             className="shimmer-sweep bg-primary text-background px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-primary/50 shadow-[0_0_24px_rgba(233,195,73,0.55)] hover:shadow-[0_0_32px_rgba(233,195,73,0.9)] transition-shadow"
           >
             View Projects
-          </RippleButton>
+          </MagneticButton>
         </div>
 
       </div>

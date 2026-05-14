@@ -1,11 +1,17 @@
 import { motion } from 'framer-motion';
 
+interface MarqueeItem {
+  label: string;
+  icon?: string; // Image URL for the logo
+}
+
 interface MarqueeProps {
-  items: string[];
+  items: (string | MarqueeItem)[];
   speed?: number;
   direction?: 'left' | 'right';
   className?: string;
   separator?: string;
+  showLogos?: boolean;
 }
 
 export default function Marquee({
@@ -14,9 +20,15 @@ export default function Marquee({
   direction = 'left',
   className = '',
   separator = '·',
+  showLogos = false,
 }: MarqueeProps) {
+  // Normalize items
+  const normalized: MarqueeItem[] = items.map((item) =>
+    typeof item === 'string' ? { label: item } : item
+  );
+
   // Duplicate items to create seamless loop
-  const duplicatedItems = [...items, ...items, ...items];
+  const duplicatedItems = [...normalized, ...normalized, ...normalized];
 
   return (
     <div
@@ -35,16 +47,32 @@ export default function Marquee({
           repeat: Infinity,
           ease: 'linear',
         }}
-        className="flex gap-8 whitespace-nowrap"
+        className="flex gap-12 whitespace-nowrap"
       >
         {duplicatedItems.map((item, index) => (
-          <span
+          <div
             key={index}
-            className="inline-flex items-center gap-8 font-headline text-3xl md:text-5xl font-black tracking-tight text-on-surface/30 hover:text-primary transition-colors"
+            className="inline-flex items-center gap-12 group"
           >
-            {item}
-            <span className="text-primary">{separator}</span>
-          </span>
+            {showLogos && item.icon ? (
+              <div className="flex items-center gap-3 transition-all duration-300 group-hover:scale-110">
+                <img
+                  src={item.icon}
+                  alt={item.label}
+                  className="h-10 w-10 md:h-14 md:w-14 object-contain opacity-50 group-hover:opacity-100 transition-opacity"
+                  loading="lazy"
+                />
+                <span className="font-headline text-2xl md:text-4xl font-black tracking-tight text-on-surface/40 group-hover:text-primary transition-colors">
+                  {item.label}
+                </span>
+              </div>
+            ) : (
+              <span className="font-headline text-3xl md:text-5xl font-black tracking-tight text-on-surface/30 hover:text-primary transition-colors">
+                {item.label}
+              </span>
+            )}
+            <span className="text-primary text-3xl md:text-5xl font-black">{separator}</span>
+          </div>
         ))}
       </motion.div>
     </div>

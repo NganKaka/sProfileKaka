@@ -71,7 +71,7 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
 
         <TerminalBoot />
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-[0.7fr_0.8fr_1.5fr] gap-3">
           {profile.stats.map((stat) => {
             return (
               <CursorAware key={stat.label} range={250} leanAmount={4}>

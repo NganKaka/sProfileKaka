@@ -52,6 +52,11 @@ export default function SiteNavbar() {
     }
     setActiveSection('');
     setOpen(false);
+
+    // If already on home page, scroll to top
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleScrollEnd = () => {

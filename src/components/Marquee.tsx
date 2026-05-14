@@ -51,47 +51,60 @@ export default function Marquee({
           repeat: Infinity,
           ease: 'linear',
         }}
-        style={{ display: 'flex', gap: '5rem', whiteSpace: 'nowrap', alignItems: 'center' }}
+        style={{
+          display: 'flex',
+          gap: variant === 'subtle' ? '2.5rem' : '4rem',
+          whiteSpace: 'nowrap',
+          alignItems: 'center',
+        }}
       >
-        {duplicatedItems.map((item, index) => (
-          <div
-            key={index}
-            style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
-            className="group"
-          >
-            {showLogos && item.icon ? (
-              <img
-                src={item.icon}
-                alt={item.label}
-                title={item.label}
-                style={{ width: '70px', height: '70px', objectFit: 'contain', opacity: 0.7 }}
-                className="transition-all duration-300 group-hover:scale-110 group-hover:opacity-100"
-                loading="lazy"
-              />
-            ) : (
+        {duplicatedItems.flatMap((item, index) => {
+          const word = (
+            <div
+              key={`item-${index}`}
+              style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+              className="group"
+            >
+              {showLogos && item.icon ? (
+                <img
+                  src={item.icon}
+                  alt={item.label}
+                  title={item.label}
+                  style={{ width: '70px', height: '70px', objectFit: 'contain', opacity: 0.7 }}
+                  className="transition-all duration-300 group-hover:scale-110 group-hover:opacity-100"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className={`font-headline tracking-tight transition-colors ${
+                    variant === 'subtle'
+                      ? 'italic text-2xl md:text-4xl font-light text-on-surface/40 hover:text-primary'
+                      : 'text-3xl md:text-5xl font-black text-on-surface/30 hover:text-primary'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              )}
+            </div>
+          );
+
+          const sep =
+            separator && separator !== '' ? (
               <span
-                className={`font-headline tracking-tight transition-colors ${
-                  variant === 'subtle'
-                    ? 'italic text-2xl md:text-4xl font-light text-on-surface/40 hover:text-primary'
-                    : 'text-3xl md:text-5xl font-black text-on-surface/30 hover:text-primary'
-                }`}
-              >
-                {item.label}
-              </span>
-            )}
-            {separator && separator !== '' && (
-              <span
+                key={`sep-${index}`}
+                style={{ flexShrink: 0 }}
                 className={`font-black opacity-50 ${
                   variant === 'subtle'
-                    ? 'text-2xl md:text-4xl text-primary/60 ml-8'
-                    : 'text-3xl md:text-5xl text-primary ml-12'
+                    ? 'text-2xl md:text-4xl text-primary/60'
+                    : 'text-3xl md:text-5xl text-primary'
                 }`}
               >
                 {separator}
               </span>
-            )}
-          </div>
-        ))}
+            ) : null;
+
+          return sep ? [word, sep] : [word];
+        })}
       </motion.div>
     </div>
   );

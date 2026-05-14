@@ -23,30 +23,30 @@
 /* Light Theme Colors */
 @media (prefers-color-scheme: light) {
   @theme {
-    --color-primary: #d4a017;
-    --color-primary-fixed-dim: #b8860b;
-    --color-background: #f8f9fa;
-    --color-surface: #ffffff;
-    --color-surface-container: #f1f3f5;
-    --color-surface-container-low: #e9ecef;
-    --color-surface-container-high: #dee2e6;
-    --color-surface-container-highest: #ced4da;
-    --color-on-surface: #1a1a1a;
+    --color-primary: #b8860b;
+    --color-primary-fixed-dim: #9a7209;
+    --color-background: #ffffff;
+    --color-surface: #f8f9fa;
+    --color-surface-container: #e9ecef;
+    --color-surface-container-low: #dee2e6;
+    --color-surface-container-high: #ced4da;
+    --color-surface-container-highest: #adb5bd;
+    --color-on-surface: #212529;
     --color-secondary: #495057;
   }
 }
 
 /* Light Theme Override (when class is applied) */
 .light {
-  --color-primary: #d4a017;
-  --color-primary-fixed-dim: #b8860b;
-  --color-background: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-surface-container: #f1f3f5;
-  --color-surface-container-low: #e9ecef;
-  --color-surface-container-high: #dee2e6;
-  --color-surface-container-highest: #ced4da;
-  --color-on-surface: #1a1a1a;
+  --color-primary: #b8860b;
+  --color-primary-fixed-dim: #9a7209;
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-container: #e9ecef;
+  --color-surface-container-low: #dee2e6;
+  --color-surface-container-high: #ced4da;
+  --color-surface-container-highest: #adb5bd;
+  --color-on-surface: #212529;
   --color-secondary: #495057;
 }
 
@@ -173,11 +173,27 @@
 }
 
 .glass-card {
-  @apply bg-white/5 backdrop-blur-md border border-white/10;
+  @apply backdrop-blur-md border;
+}
+
+.dark .glass-card {
+  @apply bg-white/5 border-white/10;
+}
+
+.light .glass-card {
+  @apply bg-black/5 border-black/10;
 }
 
 .ghost-border {
-  @apply border border-white/5;
+  @apply border;
+}
+
+.dark .ghost-border {
+  @apply border-white/5;
+}
+
+.light .ghost-border {
+  @apply border-black/10;
 }
 
 .ambient-shadow {
@@ -236,6 +252,73 @@
 
 .neon-border-wrapper:hover::before {
   opacity: 1;
+}
+
+/* Theme-aware utility classes */
+@layer utilities {
+  /* Card backgrounds */
+  .theme-card-bg {
+    @apply backdrop-blur-md;
+  }
+
+  .dark .theme-card-bg {
+    @apply bg-white/5;
+  }
+
+  .light .theme-card-bg {
+    @apply bg-black/5;
+  }
+
+  /* Borders */
+  .theme-border {
+    @apply border;
+  }
+
+  .dark .theme-border {
+    @apply border-white/10;
+  }
+
+  .light .theme-border {
+    @apply border-black/10;
+  }
+
+  .theme-border-subtle {
+    @apply border;
+  }
+
+  .dark .theme-border-subtle {
+    @apply border-white/5;
+  }
+
+  .light .theme-border-subtle {
+    @apply border-black/5;
+  }
+
+  /* Hover backgrounds */
+  .theme-hover-bg {
+    @apply transition-colors;
+  }
+
+  .dark .theme-hover-bg:hover {
+    @apply bg-white/10;
+  }
+
+  .light .theme-hover-bg:hover {
+    @apply bg-black/10;
+  }
+
+  /* Dividers */
+  .theme-divider {
+    @apply border-t;
+  }
+
+  .dark .theme-divider {
+    @apply border-white/10;
+  }
+
+  .light .theme-divider {
+    @apply border-black/10;
+  }
 }
 
 .neon-border-content {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle';
+import ScrambleText from './ui/ScrambleText';
 
 const links = [
   { label: 'About', href: '#about' },
@@ -153,7 +154,9 @@ export default function SiteNavbar() {
                       transition={{ duration: 0.25, ease: 'easeOut' }}
                     />
                   )}
-                  <span className="relative z-10">{link.label}</span>
+                  <span className="relative z-10">
+                    <ScrambleText text={link.label} duration={500} />
+                  </span>
                 </motion.a>
               );
             })}
@@ -161,7 +164,7 @@ export default function SiteNavbar() {
               to="/blog"
               className="font-headline tracking-tighter uppercase text-[12px] font-bold transition-all duration-300 px-2 py-1 rounded-md text-secondary/60 hover:text-cyan-300 hover:bg-cyan-400/10 cursor-pointer"
             >
-              Blog
+              <ScrambleText text="Blog" duration={500} />
             </Link>
             <ThemeToggle />
             <motion.a

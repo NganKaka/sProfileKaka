@@ -5,6 +5,7 @@ import { profile } from '../data/profile';
 import TerminalBoot from './ui/TerminalBoot';
 import TypingText from './ui/TypingText';
 import GradientText from './ui/GradientText';
+import CursorAware from './ui/CursorAware';
 import FadeInImage from '../lib/FadeInImage';
 import { AnimatedCounter } from './AdvancedAnimations';
 import MorphingBlob from './MorphingBlob';
@@ -83,22 +84,23 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
             const suffix = isNumeric ? numericMatch[2] : '';
 
             return (
-              <motion.div
-                key={stat.label}
-                whileHover={{ y: -4, scale: 1.02 }}
-                whileTap={{ scale: 0.99 }}
-                transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition-all hover:border-cyan-300/35 hover:bg-cyan-400/10 hover:shadow-[0_0_18px_rgba(34,211,238,0.22)]"
-              >
-                <p className="text-[10px] uppercase tracking-[0.14em] text-secondary/60 font-tech">{stat.label}</p>
-                <p className="mt-1 font-headline text-lg font-bold text-on-surface">
-                  {isNumeric ? (
-                    <AnimatedCounter end={numValue} suffix={suffix} duration={2} />
-                  ) : (
-                    stat.value
-                  )}
-                </p>
-              </motion.div>
+              <CursorAware key={stat.label} range={250} leanAmount={4}>
+                <motion.div
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition-all hover:border-cyan-300/35 hover:bg-cyan-400/10 hover:shadow-[0_0_18px_rgba(34,211,238,0.22)]"
+                >
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-secondary/60 font-tech">{stat.label}</p>
+                  <p className="mt-1 font-headline text-lg font-bold text-on-surface">
+                    {isNumeric ? (
+                      <AnimatedCounter end={numValue} suffix={suffix} duration={2} />
+                    ) : (
+                      stat.value
+                    )}
+                  </p>
+                </motion.div>
+              </CursorAware>
             );
           })}
         </div>

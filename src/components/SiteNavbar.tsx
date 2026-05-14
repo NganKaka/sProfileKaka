@@ -2,6 +2,7 @@ import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { profile } from '../data/profile';
+import ThemeToggle from './ThemeToggle';
 
 const links = [
   { label: 'About', href: '#about' },
@@ -148,6 +149,7 @@ export default function SiteNavbar() {
                 </motion.a>
               );
             })}
+            <ThemeToggle />
             <motion.a
               href={profile.tripSiteUrl}
               target="_blank"

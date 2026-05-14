@@ -7,6 +7,51 @@
   --font-tech: "JetBrains Mono", monospace;
   --font-display: "Space Grotesk", sans-serif;
 
+  /* Dark Theme Colors (Default) */
+  --color-primary: #e9c349;
+  --color-primary-fixed-dim: #e9c349;
+  --color-background: #0d1b2a;
+  --color-surface: #111417;
+  --color-surface-container: #1d2023;
+  --color-surface-container-low: #191c1f;
+  --color-surface-container-high: #282a2e;
+  --color-surface-container-highest: #323539;
+  --color-on-surface: #e1e2e7;
+  --color-secondary: #bbc9d0;
+}
+
+/* Light Theme Colors */
+@media (prefers-color-scheme: light) {
+  @theme {
+    --color-primary: #d4a017;
+    --color-primary-fixed-dim: #b8860b;
+    --color-background: #f8f9fa;
+    --color-surface: #ffffff;
+    --color-surface-container: #f1f3f5;
+    --color-surface-container-low: #e9ecef;
+    --color-surface-container-high: #dee2e6;
+    --color-surface-container-highest: #ced4da;
+    --color-on-surface: #1a1a1a;
+    --color-secondary: #495057;
+  }
+}
+
+/* Light Theme Override (when class is applied) */
+.light {
+  --color-primary: #d4a017;
+  --color-primary-fixed-dim: #b8860b;
+  --color-background: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-surface-container: #f1f3f5;
+  --color-surface-container-low: #e9ecef;
+  --color-surface-container-high: #dee2e6;
+  --color-surface-container-highest: #ced4da;
+  --color-on-surface: #1a1a1a;
+  --color-secondary: #495057;
+}
+
+/* Dark Theme Override (when class is applied) */
+.dark {
   --color-primary: #e9c349;
   --color-primary-fixed-dim: #e9c349;
   --color-background: #0d1b2a;

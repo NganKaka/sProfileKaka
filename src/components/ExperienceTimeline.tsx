@@ -2,18 +2,30 @@ import { useLayoutEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { profile } from '../data/profile';
+import { useContentList } from '../hooks/useContent';
+import { experienceSchema, type Experience } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 
 gsap.registerPlugin(ScrollTrigger);
-
-type ExperienceItem = typeof profile.experience[number];
 
 export default function ExperienceTimeline() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const desktopRef = useRef<HTMLDivElement | null>(null);
-  const railStops = profile.experience;
+
+  // Load experience from MDX files
+  const { items: experiences, loading, error } = useContentList<Experience>(
+    [
+      '/content/experience/01-ai-power.md',
+      '/content/experience/02-pi-associates.md',
+      '/content/experience/03-future-software-engineer.md',
+      '/content/experience/04-future-ai-engineer.md',
+      '/content/experience/05-future-product-engineer.md',
+    ],
+    experienceSchema
+  );
+
+  const railStops = experiences.map(e => e.data);
   const nodeXs = railStops.map((_, index) => {
     if (railStops.length === 1) return 450;
     return 5 + index * (890 / (railStops.length - 1));
@@ -27,7 +39,7 @@ export default function ExperienceTimeline() {
 
   useLayoutEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
-    if (!mediaQuery.matches || !trackRef.current || !desktopRef.current) return;
+    if (!mediaQuery.matches || !trackRef.current || !desktopRef.current || railStops.length === 0) return;
 
     const ctx = gsap.context(() => {
       const panels = gsap.utils.toArray<HTMLElement>('.experience-panel');
@@ -57,7 +69,39 @@ export default function ExperienceTimeline() {
     }, desktopRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [railStops.length]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="experience" className="space-y-8 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Experience"
+          title="Work timeline"
+          subtitle="Professional milestones across product delivery, frontend engineering, and interface storytelling."
+        />
+        <div className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section id="experience" className="space-y-8 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Experience"
+          title="Work timeline"
+          subtitle="Professional milestones across product delivery, frontend engineering, and interface storytelling."
+        />
+        <div className="glass-card rounded-2xl p-8 text-center">
+          <p className="text-red-400">Failed to load experience. Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="experience" className="space-y-8 scroll-mt-28">
@@ -94,7 +138,7 @@ export default function ExperienceTimeline() {
             </svg>
 
             <div className="absolute inset-0 pointer-events-none">
-              {profile.experience.map((item, index) => {
+              {railStops.map((item, index) => {
                 const x = nodeXs[index] ?? 450;
                 const left = `${(x / 900) * 100}%`;
                 return (
@@ -113,8 +157,8 @@ export default function ExperienceTimeline() {
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background via-background/80 to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background via-background/80 to-transparent" />
 
-          <div ref={trackRef} className="flex" style={{ width: `${profile.experience.length * 100}vw` }}>
-            {profile.experience.map((item, index) => (
+          <div ref={trackRef} className="flex" style={{ width: `${railStops.length * 100}vw` }}>
+            {railStops.map((item, index) => (
               <section key={`${item.business}-${item.role}-${index}`} className="experience-panel w-screen shrink-0 min-h-screen px-[8vw] pt-[34vh] pb-16 flex items-start">
                 <div className="glass-card rounded-3xl p-7 md:p-8 max-w-4xl w-full space-y-5 ambient-shadow border border-white/10">
                   <div className="flex flex-wrap items-center gap-3">
@@ -150,7 +194,7 @@ export default function ExperienceTimeline() {
       </div>
 
       <div className="space-y-8 md:hidden">
-        {profile.experience.map((item, index) => (
+        {railStops.map((item, index) => (
           <motion.article
             key={`${item.business}-${item.role}-${index}`}
             initial={{ opacity: 0, y: 24 }}

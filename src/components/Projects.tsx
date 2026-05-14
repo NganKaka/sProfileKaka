@@ -1,10 +1,9 @@
 import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText } from 'lucide-react';
+import { useContentList } from '../hooks/useContent';
+import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
-import { profile } from '../data/profile';
 import { trackProjectClick } from '../lib/analytics';
-
-type Project = typeof profile.projects[number];
 
 function ProjectAction({ href, label, variant, projectTitle }: { href: string; label: string; variant: 'live' | 'code' | 'case'; projectTitle: string }) {
   const Icon = variant === 'live' ? ExternalLink : variant === 'code' ? Code2 : FileText;
@@ -113,8 +112,50 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
 }
 
 export default function Projects() {
-  const featuredProject = profile.projects.find((project) => project.featured) ?? profile.projects[0];
-  const secondaryProjects = profile.projects.filter((project) => project !== featuredProject);
+  // Load projects from MDX files
+  const { items: projects, loading, error } = useContentList<Project>(
+    [
+      '/content/projects/01-stripkaka.md',
+      '/content/projects/02-portfolio-systems.md',
+      '/content/projects/03-product-storytelling.md',
+    ],
+    projectSchema
+  );
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="projects" className="space-y-7 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Projects"
+          title="Featured work"
+          subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
+        />
+        <div className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section id="projects" className="space-y-7 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Projects"
+          title="Featured work"
+          subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
+        />
+        <div className="glass-card rounded-2xl p-8 text-center">
+          <p className="text-red-400">Failed to load projects. Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
+  const featuredProject = projects.find((p) => p.data.featured) ?? projects[0];
+  const secondaryProjects = projects.filter((p) => p !== featuredProject);
 
   return (
     <section id="projects" className="space-y-7 scroll-mt-28">
@@ -125,10 +166,10 @@ export default function Projects() {
       />
 
       <div className="space-y-6 perspective-1000">
-        {featuredProject && <ProjectCard project={featuredProject} featured />}
+        {featuredProject && <ProjectCard project={featuredProject.data} featured />}
         <div className="grid gap-6 md:grid-cols-2">
           {secondaryProjects.map((project) => (
-            <ProjectCard key={project.title} project={project} />
+            <ProjectCard key={project.data.title} project={project.data} />
           ))}
         </div>
       </div>

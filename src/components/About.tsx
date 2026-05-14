@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import SectionHeading from './ui/SectionHeading';
 import { profile } from '../data/profile';
 
+// Note: About component still uses profile.ts for now
+// This component displays profile.about, profile.personalNote, profile.stats, and profile.languageSkills
+// These could be migrated to MDX in the future if needed
+
 type LanguageStrengthRowProps = {
   name: string;
   level: number;

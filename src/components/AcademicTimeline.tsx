@@ -1,11 +1,11 @@
 import { motion, AnimatePresence, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { profile } from '../data/profile';
+import { useContentList } from '../hooks/useContent';
+import { academicSchema, type Academic } from '../schemas/content';
 import FadeInImage from '../lib/FadeInImage';
 import SectionHeading from './ui/SectionHeading';
 
-type TimelineItem = typeof profile.academicTimeline[number];
 type ActiveTimelineImage = {
   src: string;
   alt: string;
@@ -21,9 +21,22 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
   const { scrollYProgress } = useScroll({ target: timelineRef, offset: ['start 80%', 'end 20%'] });
   const traceScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
+  // Load academic timeline from MDX files
+  const { items: academics, loading, error } = useContentList<Academic>(
+    [
+      '/content/academic/01-thong-tay-hoi.md',
+      '/content/academic/02-le-hong-phong.md',
+      '/content/academic/03-university-bachelor.md',
+      '/content/academic/04-university-master.md',
+    ],
+    academicSchema
+  );
+
+  const academicTimeline = academics.map(a => a.data);
+
   const galleryImages = useMemo(
     () =>
-      profile.academicTimeline.flatMap((item, timelineIndex) =>
+      academicTimeline.flatMap((item, timelineIndex) =>
         item.images.map((src, imageIndex) => ({
           src,
           alt: `${item.title} ${imageIndex + 1}`,
@@ -31,7 +44,7 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
           imageIndex,
         })),
       ),
-    [],
+    [academicTimeline],
   );
 
   const activeImageIndex = useMemo(() => {
@@ -85,6 +98,38 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
     setActiveImage(galleryImages[nextIndex]);
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="academics" className="space-y-8 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Academic Process"
+          title="Learning timeline"
+          subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
+        />
+        <div className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section id="academics" className="space-y-8 scroll-mt-28">
+        <SectionHeading
+          eyebrow="Academic Process"
+          title="Learning timeline"
+          subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
+        />
+        <div className="glass-card rounded-2xl p-8 text-center">
+          <p className="text-red-400">Failed to load academic timeline. Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="academics" className="space-y-8 scroll-mt-28">
       <SectionHeading
@@ -101,7 +146,7 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
         />
 
         <div className="space-y-10 md:space-y-14">
-          {profile.academicTimeline.map((item, index) => {
+          {academicTimeline.map((item, index) => {
             const reversed = index % 2 === 1;
             return (
               <motion.article
@@ -249,7 +294,7 @@ function TimelineNode({ index, progress, nodePoint }: { index: number; progress:
   );
 }
 
-function TimelineStory({ item, index, className }: { item: TimelineItem; index: number; className?: string }) {
+function TimelineStory({ item, index, className }: { item: Academic; index: number; className?: string }) {
   return (
     <div className={`glass-card rounded-2xl p-5 md:p-6 transition-all hover:border-cyan-300/35 hover:bg-white/[0.07] ${className || ''}`}>
       <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -288,7 +333,7 @@ function TimelineImageCollage({
   className,
   onOpenImage,
 }: {
-  item: TimelineItem;
+  item: Academic;
   timelineIndex: number;
   className?: string;
   onOpenImage: (imageIndex: number) => void;

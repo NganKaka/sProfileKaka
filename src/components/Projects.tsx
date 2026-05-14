@@ -2,10 +2,11 @@ import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText } from 'lucid
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
 import { profile } from '../data/profile';
+import { trackProjectClick } from '../lib/analytics';
 
 type Project = typeof profile.projects[number];
 
-function ProjectAction({ href, label, variant }: { href: string; label: string; variant: 'live' | 'code' | 'case' }) {
+function ProjectAction({ href, label, variant, projectTitle }: { href: string; label: string; variant: 'live' | 'code' | 'case'; projectTitle: string }) {
   const Icon = variant === 'live' ? ExternalLink : variant === 'code' ? Code2 : FileText;
 
   return (
@@ -13,6 +14,7 @@ function ProjectAction({ href, label, variant }: { href: string; label: string; 
       href={href}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+      onClick={() => trackProjectClick(projectTitle, variant)}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-[10px] font-tech uppercase tracking-[0.16em] transition-all ${
         variant === 'live'
           ? 'border border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:shadow-[0_0_18px_rgba(233,195,73,0.28)]'
@@ -100,9 +102,9 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
-            <ProjectAction href={project.liveUrl} label="Live" variant="live" />
-            <ProjectAction href={project.codeUrl} label="Code" variant="code" />
-            <ProjectAction href={project.caseStudyUrl} label="Case" variant="case" />
+            <ProjectAction href={project.liveUrl} label="Live" variant="live" projectTitle={project.title} />
+            <ProjectAction href={project.codeUrl} label="Code" variant="code" projectTitle={project.title} />
+            <ProjectAction href={project.caseStudyUrl} label="Case" variant="case" projectTitle={project.title} />
           </div>
         </div>
       </div>

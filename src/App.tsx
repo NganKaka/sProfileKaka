@@ -41,8 +41,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-background focus:rounded-lg focus:font-bold"
+      >
+        Skip to main content
+      </a>
+
       <SiteNavbar />
-      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
+      <main id="main-content" className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
         <Hero onImageModalChange={setHeroImageModalOpen} />
         <About />
         <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />

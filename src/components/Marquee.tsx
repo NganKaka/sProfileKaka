@@ -12,6 +12,8 @@ interface MarqueeProps {
   className?: string;
   separator?: string;
   showLogos?: boolean;
+  /** Style variant for text-only marquees */
+  variant?: 'display' | 'subtle';
 }
 
 export default function Marquee({
@@ -21,6 +23,7 @@ export default function Marquee({
   className = '',
   separator = '·',
   showLogos = false,
+  variant = 'display',
 }: MarqueeProps) {
   // Normalize items
   const normalized: MarqueeItem[] = items.map((item) =>
@@ -66,12 +69,26 @@ export default function Marquee({
                 loading="lazy"
               />
             ) : (
-              <span className="font-headline text-3xl md:text-5xl font-black tracking-tight text-on-surface/30 hover:text-primary transition-colors">
+              <span
+                className={`font-headline tracking-tight transition-colors ${
+                  variant === 'subtle'
+                    ? 'italic text-2xl md:text-4xl font-light text-on-surface/40 hover:text-primary'
+                    : 'text-3xl md:text-5xl font-black text-on-surface/30 hover:text-primary'
+                }`}
+              >
                 {item.label}
               </span>
             )}
             {separator && separator !== '' && (
-              <span className="text-primary text-3xl md:text-5xl font-black opacity-40 ml-12">{separator}</span>
+              <span
+                className={`font-black opacity-50 ${
+                  variant === 'subtle'
+                    ? 'text-2xl md:text-4xl text-primary/60 ml-8'
+                    : 'text-3xl md:text-5xl text-primary ml-12'
+                }`}
+              >
+                {separator}
+              </span>
             )}
           </div>
         ))}

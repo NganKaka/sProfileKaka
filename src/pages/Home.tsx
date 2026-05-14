@@ -122,6 +122,20 @@ export default function Home() {
             <Skills />
           </SectionTransition>
         </ErrorBoundary>
+      </main>
+
+      {/* Values marquee — opposite direction, italic, plain text */}
+      <div className="relative z-10 my-12">
+        <Marquee
+          items={['Curious', 'Crafted', 'Pragmatic', 'Reliable', 'Honest', 'Iterative', 'Direct', 'Thoughtful']}
+          speed={50}
+          direction="right"
+          separator="—"
+          variant="subtle"
+        />
+      </div>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-20 space-y-24">
         <ErrorBoundary>
           <SectionTransition delay={0.1}>
             <Projects />

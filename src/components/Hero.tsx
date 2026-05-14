@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Facebook, Github, Mail, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { profile } from '../data/profile';
 import TerminalBoot from './ui/TerminalBoot';
 import TypingText from './ui/TypingText';
@@ -13,10 +13,6 @@ import RippleButton from './ui/RippleButton';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
-  const imageY = useTransform(scrollY, [0, 800], [0, -100]);
-  const imageScale = useTransform(scrollY, [0, 800], [1, 0.95]);
 
   useEffect(() => {
     onImageModalChange?.(showProfileImage);
@@ -123,7 +119,6 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: [0, -16, 0] }}
         transition={{ opacity: { duration: 0.6, ease: 'easeOut' }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
-        style={{ y: imageY, scale: imageScale }}
         className="relative mx-auto w-full max-w-md"
       >
         <div className="glass-card rounded-3xl p-4 md:p-5 ambient-shadow">

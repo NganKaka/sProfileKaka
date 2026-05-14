@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { profile } from '../data/profile';
 import TerminalBoot from './ui/TerminalBoot';
 import TypingText from './ui/TypingText';
+import GradientText from './ui/GradientText';
 import FadeInImage from '../lib/FadeInImage';
 import { AnimatedCounter } from './AdvancedAnimations';
 import MorphingBlob from './MorphingBlob';
+import RippleButton from './ui/RippleButton';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -47,9 +49,9 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.5, duration: 0.6 }}
-            className="text-lg md:text-2xl font-headline font-bold text-primary/90"
+            className="text-lg md:text-2xl font-headline font-bold"
           >
-            {profile.title}
+            <GradientText text={profile.title} />
           </motion.p>
           <div className="flex flex-wrap gap-3 pt-2">
             {profile.socials.map((social) => {
@@ -102,9 +104,15 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <a href="#projects" className="shimmer-sweep bg-primary text-background px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-primary/50 shadow-[0_0_24px_rgba(233,195,73,0.55)] hover:shadow-[0_0_32px_rgba(233,195,73,0.9)] transition-shadow">
+          <RippleButton
+            onClick={() => {
+              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            rippleColor="rgba(13, 27, 42, 0.4)"
+            className="shimmer-sweep bg-primary text-background px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-primary/50 shadow-[0_0_24px_rgba(233,195,73,0.55)] hover:shadow-[0_0_32px_rgba(233,195,73,0.9)] transition-shadow"
+          >
             View Projects
-          </a>
+          </RippleButton>
         </div>
 
       </div>

@@ -4,6 +4,7 @@ import { useContentList } from '../hooks/useContent';
 import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
+import TiltCard from './ui/TiltCard';
 import { trackProjectClick } from '../lib/analytics';
 import { ProjectGridSkeleton } from './LoadingSkeleton';
 
@@ -266,7 +267,9 @@ export default function Projects() {
           {featuredProject && <ProjectCard project={featuredProject.data} featured />}
           <div className="grid gap-6 md:grid-cols-2">
             {secondaryProjects.map((project) => (
-              <ProjectCard key={project.data.title} project={project.data} />
+              <TiltCard key={project.data.title} intensity={6} className="h-full">
+                <ProjectCard project={project.data} />
+              </TiltCard>
             ))}
           </div>
         </div>

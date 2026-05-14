@@ -20,8 +20,8 @@ export const profile = {
   ],
   stats: [
     { label: 'Projects', value: '08+' },
-    { label: 'Mathematical Base', value: '100%' },
-    { label: 'Focus', value: 'Software Engineer' },
+    { label: 'Math Base', value: '100%' },
+    { label: 'Focus', value: 'Engineer' },
   ],
   languageSkills: [
     { name: 'CS Fundamental', level: 90 },

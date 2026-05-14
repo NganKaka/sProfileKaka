@@ -55,23 +55,23 @@ export default function Marquee({
             className="inline-flex items-center gap-12 group"
           >
             {showLogos && item.icon ? (
-              <div className="flex items-center gap-3 transition-all duration-300 group-hover:scale-110">
+              <div className="flex items-center transition-all duration-300 group-hover:scale-110">
                 <img
                   src={item.icon}
                   alt={item.label}
-                  className="h-10 w-10 md:h-14 md:w-14 object-contain opacity-50 group-hover:opacity-100 transition-opacity"
+                  title={item.label}
+                  className="h-12 w-12 md:h-16 md:w-16 object-contain opacity-60 group-hover:opacity-100 transition-opacity"
                   loading="lazy"
                 />
-                <span className="font-headline text-2xl md:text-4xl font-black tracking-tight text-on-surface/40 group-hover:text-primary transition-colors">
-                  {item.label}
-                </span>
               </div>
             ) : (
               <span className="font-headline text-3xl md:text-5xl font-black tracking-tight text-on-surface/30 hover:text-primary transition-colors">
                 {item.label}
               </span>
             )}
-            <span className="text-primary text-3xl md:text-5xl font-black">{separator}</span>
+            {separator && (
+              <span className="text-primary text-3xl md:text-5xl font-black opacity-40">{separator}</span>
+            )}
           </div>
         ))}
       </motion.div>

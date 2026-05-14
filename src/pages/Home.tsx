@@ -16,7 +16,6 @@ import Testimonials from '../components/Testimonials';
 import Marquee from '../components/Marquee';
 import MeshGradient from '../components/MeshGradient';
 import LiquidDivider from '../components/LiquidDivider';
-import HorizontalGallery from '../components/HorizontalGallery';
 import ScrollSkew from '../components/ui/ScrollSkew';
 import SiteFooter from '../components/SiteFooter';
 import ScrollCompass from '../components/ScrollCompass';
@@ -142,35 +141,6 @@ export default function Home() {
           <SectionTransition delay={0.1}>
             <Testimonials />
           </SectionTransition>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <HorizontalGallery
-            eyebrow="Moments"
-            title="A few stops along the way"
-            subtitle="Schools, classrooms, late nights — the places where the work happened."
-            items={[
-              {
-                src: '/learning-photoes/thong-tay-hoi/tth-1.jpg',
-                title: 'Thong Tay Hoi',
-                caption: 'Where it started — secondary school years and the first math competitions.',
-              },
-              {
-                src: '/learning-photoes/thong-tay-hoi/tth-2.jpg',
-                title: 'Class portraits',
-                caption: 'Long days of self-study before the late-night problem sets.',
-              },
-              {
-                src: '/learning-photoes/le-hong-phong/lhp-1.jpg',
-                title: 'Le Hong Phong',
-                caption: 'Mathematics specializing class — sharper questions, longer proofs.',
-              },
-              {
-                src: '/learning-photoes/le-hong-phong/lhp-3.jpg',
-                title: 'Late nights',
-                caption: 'VMO prep, geometry olympiads, and the friendships that came with them.',
-              },
-            ]}
-          />
         </ErrorBoundary>
       </main>
       <div className="relative z-10">

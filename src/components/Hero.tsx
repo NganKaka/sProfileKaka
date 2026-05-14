@@ -94,7 +94,13 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
         <div className="flex flex-wrap gap-3">
           <ConfettiBurst
             onClick={() => {
-              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+              const target = document.getElementById('projects');
+              if (!target) return;
+              if (window.__lenis) {
+                window.__lenis.scrollTo(target, { offset: -100 });
+              } else {
+                target.scrollIntoView({ behavior: 'smooth' });
+              }
             }}
             colors={['#e9c349', '#22d3ee', '#a855f7', '#ffffff']}
             particleCount={20}

@@ -32,10 +32,11 @@ export default function Marquee({
 
   return (
     <div
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden py-8 ${className}`}
       style={{
         maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
         WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+        minHeight: '110px',
       }}
     >
       <motion.div
@@ -47,30 +48,30 @@ export default function Marquee({
           repeat: Infinity,
           ease: 'linear',
         }}
-        className="flex gap-12 whitespace-nowrap"
+        style={{ display: 'flex', gap: '5rem', whiteSpace: 'nowrap', alignItems: 'center' }}
       >
         {duplicatedItems.map((item, index) => (
           <div
             key={index}
-            className="inline-flex items-center gap-12 group"
+            style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+            className="group"
           >
             {showLogos && item.icon ? (
-              <div className="flex items-center transition-all duration-300 group-hover:scale-110">
-                <img
-                  src={item.icon}
-                  alt={item.label}
-                  title={item.label}
-                  className="h-12 w-12 md:h-16 md:w-16 object-contain opacity-60 group-hover:opacity-100 transition-opacity"
-                  loading="lazy"
-                />
-              </div>
+              <img
+                src={item.icon}
+                alt={item.label}
+                title={item.label}
+                style={{ width: '70px', height: '70px', objectFit: 'contain', opacity: 0.7 }}
+                className="transition-all duration-300 group-hover:scale-110 group-hover:opacity-100"
+                loading="lazy"
+              />
             ) : (
               <span className="font-headline text-3xl md:text-5xl font-black tracking-tight text-on-surface/30 hover:text-primary transition-colors">
                 {item.label}
               </span>
             )}
             {separator && separator !== '' && (
-              <span className="text-primary text-3xl md:text-5xl font-black opacity-40">{separator}</span>
+              <span className="text-primary text-3xl md:text-5xl font-black opacity-40 ml-12">{separator}</span>
             )}
           </div>
         ))}

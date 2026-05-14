@@ -90,16 +90,16 @@ export default function Home() {
         <Marquee
           showLogos
           items={[
-            { label: 'React', icon: 'https://skillicons.dev/icons?i=react' },
-            { label: 'TypeScript', icon: 'https://skillicons.dev/icons?i=ts' },
-            { label: 'Python', icon: 'https://skillicons.dev/icons?i=python' },
-            { label: 'PostgreSQL', icon: 'https://skillicons.dev/icons?i=postgres' },
-            { label: 'Docker', icon: 'https://skillicons.dev/icons?i=docker' },
-            { label: 'Java', icon: 'https://skillicons.dev/icons?i=java' },
-            { label: 'Vite', icon: 'https://skillicons.dev/icons?i=vite' },
-            { label: 'Tailwind', icon: 'https://skillicons.dev/icons?i=tailwind' },
-            { label: 'Node.js', icon: 'https://skillicons.dev/icons?i=nodejs' },
-            { label: 'Git', icon: 'https://skillicons.dev/icons?i=git' },
+            { label: 'React', icon: 'https://cdn.simpleicons.org/react/61DAFB' },
+            { label: 'TypeScript', icon: 'https://cdn.simpleicons.org/typescript/3178C6' },
+            { label: 'Python', icon: 'https://cdn.simpleicons.org/python/3776AB' },
+            { label: 'PostgreSQL', icon: 'https://cdn.simpleicons.org/postgresql/4169E1' },
+            { label: 'Docker', icon: 'https://cdn.simpleicons.org/docker/2496ED' },
+            { label: 'Java', icon: 'https://cdn.simpleicons.org/openjdk/F58219' },
+            { label: 'Vite', icon: 'https://cdn.simpleicons.org/vite/646CFF' },
+            { label: 'Tailwind', icon: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
+            { label: 'Node.js', icon: 'https://cdn.simpleicons.org/nodedotjs/5FA04E' },
+            { label: 'Git', icon: 'https://cdn.simpleicons.org/git/F05032' },
           ]}
           speed={40}
           separator=""

@@ -125,3 +125,33 @@ export const projectSchema = z.object({
 });
 
 export type Project = z.infer<typeof projectSchema>;
+
+/**
+ * Blog Post Schema
+ */
+export const blogPostSchema = z.object({
+  title: z.string(),
+  slug: z.string(),
+  date: z.string(),
+  excerpt: z.string(),
+  tags: z.array(z.string()),
+  readTime: z.number(),
+  coverImage: z.string().optional(),
+  featured: z.boolean().optional(),
+});
+
+export type BlogPost = z.infer<typeof blogPostSchema>;
+
+/**
+ * Testimonial Schema
+ */
+export const testimonialSchema = z.object({
+  name: z.string(),
+  role: z.string(),
+  company: z.string(),
+  quote: z.string(),
+  avatar: z.string().optional(),
+  rating: z.number().min(1).max(5).optional(),
+});
+
+export type Testimonial = z.infer<typeof testimonialSchema>;

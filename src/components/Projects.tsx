@@ -1,4 +1,5 @@
-import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText, Search, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useContentList } from '../hooks/useContent';
 import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
@@ -114,6 +115,9 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
 }
 
 export default function Projects() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
   // Load projects from MDX files
   const { items: projects, loading, error } = useContentList<Project>(
     [
@@ -123,6 +127,29 @@ export default function Projects() {
     ],
     projectSchema
   );
+
+  // Get all unique tags from projects
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    projects.forEach((p) => p.data.stack.forEach((s) => tags.add(s)));
+    return Array.from(tags).sort();
+  }, [projects]);
+
+  // Filter projects based on search and tag
+  const filteredProjects = useMemo(() => {
+    return projects.filter((p) => {
+      const matchesSearch =
+        searchQuery === '' ||
+        p.data.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.data.body?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+        p.data.stack.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        p.data.role.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesTag = !selectedTag || p.data.stack.includes(selectedTag);
+
+      return matchesSearch && matchesTag;
+    });
+  }, [projects, searchQuery, selectedTag]);
 
   // Show loading state
   if (loading) {
@@ -154,8 +181,8 @@ export default function Projects() {
     );
   }
 
-  const featuredProject = projects.find((p) => p.data.featured) ?? projects[0];
-  const secondaryProjects = projects.filter((p) => p !== featuredProject);
+  const featuredProject = filteredProjects.find((p) => p.data.featured) ?? filteredProjects[0];
+  const secondaryProjects = filteredProjects.filter((p) => p !== featuredProject);
 
   return (
     <section id="projects" className="space-y-7 scroll-mt-28">
@@ -165,14 +192,85 @@ export default function Projects() {
         subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
       />
 
-      <div className="space-y-6 perspective-1000">
-        {featuredProject && <ProjectCard project={featuredProject.data} featured />}
-        <div className="grid gap-6 md:grid-cols-2">
-          {secondaryProjects.map((project) => (
-            <ProjectCard key={project.data.title} project={project.data} />
-          ))}
+      {/* Search and Filter Bar */}
+      <div className="space-y-4">
+        <div className="relative">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary/50 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search projects by title, tech, or role..."
+            className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-11 text-sm text-on-surface placeholder:text-secondary/50 transition-all focus:border-cyan-300/50 focus:bg-cyan-400/[0.05] focus:outline-none"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary/50 hover:text-secondary transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
+
+        {allTags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedTag(null)}
+              className={`rounded-full px-3 py-1.5 text-[10px] font-tech uppercase tracking-[0.14em] transition-all ${
+                !selectedTag
+                  ? 'border border-primary/40 bg-primary/15 text-primary'
+                  : 'border border-white/10 bg-white/[0.03] text-secondary/70 hover:border-cyan-300/30 hover:text-cyan-200'
+              }`}
+            >
+              All ({projects.length})
+            </button>
+            {allTags.map((tag) => {
+              const count = projects.filter((p) => p.data.stack.includes(tag)).length;
+              return (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                  className={`rounded-full px-3 py-1.5 text-[10px] font-tech uppercase tracking-[0.14em] transition-all ${
+                    selectedTag === tag
+                      ? 'border border-cyan-300/50 bg-cyan-400/15 text-cyan-200'
+                      : 'border border-white/10 bg-white/[0.03] text-secondary/70 hover:border-cyan-300/30 hover:text-cyan-200'
+                  }`}
+                >
+                  {tag} ({count})
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {filteredProjects.length === 0 && (
+          <div className="glass-card rounded-2xl p-8 text-center">
+            <p className="text-secondary/70">No projects match your filters.</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedTag(null);
+              }}
+              className="mt-3 text-sm text-cyan-300 hover:text-cyan-200 underline"
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
       </div>
+
+      {filteredProjects.length > 0 && (
+        <div className="space-y-6 perspective-1000">
+          {featuredProject && <ProjectCard project={featuredProject.data} featured />}
+          <div className="grid gap-6 md:grid-cols-2">
+            {secondaryProjects.map((project) => (
+              <ProjectCard key={project.data.title} project={project.data} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

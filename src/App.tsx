@@ -12,6 +12,7 @@ import AcademicTimeline from './components/AcademicTimeline';
 import ExperienceTimeline from './components/ExperienceTimeline';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
+import Testimonials from './components/Testimonials';
 import SiteFooter from './components/SiteFooter';
 import ScrollCompass from './components/ScrollCompass';
 import BackToTopButton from './components/BackToTopButton';
@@ -94,6 +95,11 @@ export default function App() {
             <ErrorBoundary>
               <SectionTransition delay={0.1}>
                 <Projects />
+              </SectionTransition>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <SectionTransition delay={0.1}>
+                <Testimonials />
               </SectionTransition>
             </ErrorBoundary>
           </main>

@@ -1,6 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle';
 
@@ -149,6 +150,12 @@ export default function SiteNavbar() {
                 </motion.a>
               );
             })}
+            <Link
+              to="/blog"
+              className="font-headline tracking-tighter uppercase text-[12px] font-bold transition-all duration-300 px-2 py-1 rounded-md text-secondary/60 hover:text-cyan-300 hover:bg-cyan-400/10 cursor-pointer"
+            >
+              Blog
+            </Link>
             <ThemeToggle />
             <motion.a
               href={profile.tripSiteUrl}
@@ -226,6 +233,13 @@ export default function SiteNavbar() {
                     </motion.a>
                   );
                 })}
+                <Link
+                  to="/blog"
+                  onClick={() => setOpen(false)}
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-widest text-secondary hover:text-cyan-200 hover:bg-cyan-500/10 border border-transparent transition-colors"
+                >
+                  Blog
+                </Link>
                 <a
                   href={profile.tripSiteUrl}
                   target="_blank"

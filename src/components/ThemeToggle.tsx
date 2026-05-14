@@ -1,14 +1,52 @@
 import { motion } from 'framer-motion';
 import { Moon, Sun, Monitor } from 'lucide-react';
+import { MouseEvent } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+
+type Theme = 'light' | 'dark' | 'system';
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
-  const themes = [
-    { value: 'light' as const, icon: Sun, label: 'Light' },
-    { value: 'dark' as const, icon: Moon, label: 'Dark' },
-    { value: 'system' as const, icon: Monitor, label: 'System' },
+  const handleThemeChange = (event: MouseEvent<HTMLButtonElement>, value: Theme) => {
+    // Capture click coordinates for circular reveal origin
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    // Use View Transitions API if available, otherwise fall back to instant
+    // @ts-expect-error - startViewTransition is not yet in standard types
+    if (typeof document.startViewTransition === 'function') {
+      // @ts-expect-error
+      const transition = document.startViewTransition(() => setTheme(value));
+
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 500,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          },
+        );
+      });
+    } else {
+      setTheme(value);
+    }
+  };
+
+  const themes: Array<{ value: Theme; icon: typeof Sun; label: string }> = [
+    { value: 'light', icon: Sun, label: 'Light' },
+    { value: 'dark', icon: Moon, label: 'Dark' },
+    { value: 'system', icon: Monitor, label: 'System' },
   ];
 
   return (
@@ -16,7 +54,7 @@ export default function ThemeToggle() {
       {themes.map(({ value, icon: Icon, label }) => (
         <button
           key={value}
-          onClick={() => setTheme(value)}
+          onClick={(e) => handleThemeChange(e, value)}
           className={`relative rounded-full p-2 transition-colors ${
             theme === value
               ? 'text-primary'

@@ -321,6 +321,21 @@
   }
 }
 
+/* View Transitions: ensure the new theme reveals via clip-path only */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
 /* Light mode global overrides for white-based utilities */
 .light [class*="bg-white/"] {
   background-color: rgba(0, 0, 0, 0.06);

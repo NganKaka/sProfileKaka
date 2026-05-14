@@ -17,7 +17,13 @@ export default function FadeInImage({ src, alt, className, loading = 'lazy', dec
   }, [src]);
 
   return (
-    <span className={`block h-full w-full transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+    <span
+      className="block h-full w-full overflow-hidden"
+      style={{
+        clipPath: loaded ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
+        transition: 'clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}
+    >
       <img
         key={src}
         src={src}

@@ -33,10 +33,11 @@ function ProjectPreview({ project, featured }: { project: Project; featured: boo
       <img
         src={project.previewImage}
         alt={`${project.title} preview`}
-        className="absolute inset-0 h-full w-full object-cover opacity-60 transition duration-700 group-hover:scale-105 group-hover:opacity-80"
+        className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-90"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/55 to-background/95" />
-      <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-background/65 p-4 backdrop-blur-md">
+      <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/55 to-background/95 transition-opacity duration-500 group-hover:opacity-70" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-cyan-500/20 via-transparent to-primary/10" />
+      <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-background/65 p-4 backdrop-blur-md transition-all duration-500 group-hover:border-cyan-300/40 group-hover:bg-background/75 group-hover:translate-y-[-4px]">
         <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-cyan-100/60">Preview</p>
         <p className="mt-1 font-headline text-xl font-bold text-on-surface">{project.title}</p>
       </div>

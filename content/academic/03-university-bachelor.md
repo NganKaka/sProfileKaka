@@ -2,6 +2,11 @@
 period: 2023 — 2027
 title: VNU-HCM, University of Technology
 institution: Computer Science
+achievements:
+  - Academic Encouragement Scholarship - 120% & 110% Scholarships (Ranked 2nd in Faculty)
+  - OISP Scholarship, Odon Vallet Scholarship
+  - IELTS 7.0 Academic
+  - Graduated one semester early (completed in 3.5 years)
 highlights:
   - CS
   - IELTS

@@ -7,7 +7,7 @@ interface SkeletonProps {
 function Skeleton({ className = '' }: SkeletonProps) {
   return (
     <motion.div
-      className={`rounded-lg dark:bg-white/5 light:bg-black/10 ${className}`}
+      className={`rounded-lg dark:bg-white/5 light:bg-black/[0.08] ${className}`}
       animate={{
         opacity: [0.5, 0.8, 0.5],
       }}
@@ -22,7 +22,7 @@ function Skeleton({ className = '' }: SkeletonProps) {
 
 export function ProjectCardSkeleton() {
   return (
-    <div className="group relative rounded-2xl border dark:border-white/10 light:border-black/10 dark:bg-white/5 light:bg-black/5 backdrop-blur-sm p-6 overflow-hidden">
+    <div className="group relative rounded-2xl border dark:border-white/10 light:border-black/[0.15] dark:bg-white/5 light:bg-black/[0.02] backdrop-blur-sm p-6 overflow-hidden shadow-sm">
       <Skeleton className="w-full h-48 mb-4" />
       <Skeleton className="h-6 w-3/4 mb-3" />
       <Skeleton className="h-4 w-full mb-2" />
@@ -40,7 +40,7 @@ export function ProjectCardSkeleton() {
 export function ExperienceCardSkeleton() {
   return (
     <div className="relative pl-8 pb-12">
-      <div className="absolute left-0 top-2 w-4 h-4 rounded-full dark:bg-white/10 light:bg-black/20" />
+      <div className="absolute left-0 top-2 w-4 h-4 rounded-full dark:bg-white/10 light:bg-black/[0.15]" />
       <Skeleton className="h-5 w-32 mb-2" />
       <Skeleton className="h-6 w-2/3 mb-2" />
       <Skeleton className="h-4 w-1/2 mb-4" />
@@ -52,7 +52,7 @@ export function ExperienceCardSkeleton() {
 
 export function AcademicCardSkeleton() {
   return (
-    <div className="relative rounded-xl border dark:border-white/10 light:border-black/10 dark:bg-white/5 light:bg-black/5 backdrop-blur-sm p-6">
+    <div className="relative rounded-xl border dark:border-white/10 light:border-black/[0.15] dark:bg-white/5 light:bg-black/[0.02] backdrop-blur-sm p-6 shadow-sm">
       <Skeleton className="h-5 w-24 mb-3" />
       <Skeleton className="h-6 w-3/4 mb-2" />
       <Skeleton className="h-4 w-1/2 mb-4" />

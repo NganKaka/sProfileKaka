@@ -172,11 +172,13 @@ export default function ExperienceTimeline() {
                     <p className="text-sm text-cyan-100/60 font-tech uppercase tracking-[0.14em]">{item.role}</p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4 text-secondary/85">
-                    {item.details.map((detail) => (
-                      <p key={detail} className="leading-relaxed">{detail}</p>
-                    ))}
-                  </div>
+                  {item.details && item.details.length > 0 && (
+                    <div className="grid md:grid-cols-2 gap-4 text-secondary/85">
+                      {item.details.map((detail) => (
+                        <p key={detail} className="leading-relaxed">{detail}</p>
+                      ))}
+                    </div>
+                  )}
 
                   <div className="flex flex-wrap gap-2">
                     {item.highlights.map((highlight) => (
@@ -210,11 +212,13 @@ export default function ExperienceTimeline() {
             </div>
             <h3 className="font-headline text-2xl font-bold text-on-surface tracking-tight">{item.business}</h3>
             <p className="mt-1 text-sm text-cyan-100/60 font-tech uppercase tracking-[0.14em]">{item.role}</p>
-            <div className="mt-4 space-y-2 text-secondary/85">
-              {item.details.map((detail) => (
-                <p key={detail} className="leading-relaxed">• {detail}</p>
-              ))}
-            </div>
+            {item.details && item.details.length > 0 && (
+              <div className="mt-4 space-y-2 text-secondary/85">
+                {item.details.map((detail) => (
+                  <p key={detail} className="leading-relaxed">• {detail}</p>
+                ))}
+              </div>
+            )}
             <div className="mt-5 flex flex-wrap gap-2">
               {item.highlights.map((highlight) => (
                 <span key={highlight} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-tech uppercase tracking-[0.14em] text-secondary/70">

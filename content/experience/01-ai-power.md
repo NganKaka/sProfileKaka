@@ -2,6 +2,9 @@
 period: 1/2026 — 4/2026
 business: AI POWER
 role: Fullstack Developer Intern
+details:
+  - Analyzed requirements and supported software design while developing and maintaining web and mobile application features with clean, maintainable code
+  - Implemented unit and integration tests, collaborated closely with teammates, and continuously learned new technologies to deliver practical, reliable solutions
 highlights:
   - Java
   - React

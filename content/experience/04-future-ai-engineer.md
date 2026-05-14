@@ -2,6 +2,8 @@
 period: Next
 business: Future Opportunity
 role: AI / Software Engineer
+details:
+  - Interested in AI-assisted engineering, automation, and scalable services that combine strong implementation with practical business impact
 highlights:
   - AI Tools
   - Automation

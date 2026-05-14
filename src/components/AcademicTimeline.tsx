@@ -149,7 +149,7 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
             const reversed = index % 2 === 1;
             return (
               <motion.article
-                key={item.title}
+                key={`${item.institution}-${item.period}-${index}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}

@@ -60,7 +60,7 @@ export const experienceSchema = z.object({
   period: z.string(),
   business: z.string(),
   role: z.string(),
-  details: z.array(z.string()),
+  details: z.array(z.string()).optional(),
   highlights: z.array(z.string()),
 });
 
@@ -73,7 +73,7 @@ export const academicSchema = z.object({
   period: z.string(),
   title: z.string(),
   institution: z.string(),
-  achievements: z.array(z.string()),
+  achievements: z.array(z.string()).optional(),
   images: z.array(z.string()),
   highlights: z.array(z.string()),
   story: z.string().optional(),
@@ -109,9 +109,9 @@ export type Hobby = z.infer<typeof hobbySchema>;
 export const projectSchema = z.object({
   title: z.string(),
   meta: z.string(),
-  body: z.string(),
-  href: z.string(),
-  cta: z.string(),
+  body: z.string().optional(),
+  href: z.string().optional(),
+  cta: z.string().optional(),
   liveUrl: z.string(),
   codeUrl: z.string(),
   caseStudyUrl: z.string(),

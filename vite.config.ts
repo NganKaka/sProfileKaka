@@ -21,6 +21,21 @@ export default defineConfig({
       webp: { quality: 80 },
     }),
   ],
+  define: {
+    'global': 'globalThis',
+  },
+  resolve: {
+    alias: {
+      buffer: 'buffer',
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis',
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {

@@ -2,6 +2,10 @@
 period: 2020 — 2023
 title: Le Hong Phong High School for the Gifted
 institution: Mathematics Specializing Class
+achievements:
+  - Third Prize (2022) & Honorable Mention (2021) in the Vietnam Mathematical Olympiad (VMO)
+  - First Prize in HCMC Mathematical Olympiad (2 consecutive years)
+  - Silver Medal - Asia International Mathematical Olympiad (AIMO), Gold Medal - Hong Kong International Mathematical Olympiad (HKIMO), Aluminium Compass Prize in Iranian Geometry Olympiad (IGO)
 highlights:
   - Mathematics
   - Geometry

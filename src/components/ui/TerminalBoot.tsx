@@ -105,7 +105,7 @@ export default function TerminalBoot() {
   }, [done, rows]);
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden border border-white/10 bg-black/30 font-tech text-sm">
+    <div className="rounded-2xl overflow-hidden border border-white/10 bg-[#0a0e14] font-tech text-sm shadow-xl">
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5 shrink-0">
@@ -113,7 +113,7 @@ export default function TerminalBoot() {
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
           </div>
-          <span className="text-[10px] text-secondary/40 ml-2">terminal — portfolio.exe</span>
+          <span className="text-[10px] text-white/40 ml-2">terminal — portfolio.exe</span>
         </div>
 
         {!done && (
@@ -130,22 +130,22 @@ export default function TerminalBoot() {
       <div className="p-4 md:p-5 space-y-1.5 min-h-[240px]" aria-label="Terminal boot sequence">
         {displayed.map((row, i) => (
           <div key={i} className="flex flex-wrap gap-x-2 leading-relaxed">
-            <span className="text-cyan-300/80 shrink-0">{row.prompt || ' '}</span>
+            <span className="text-cyan-400 shrink-0">{row.prompt || ' '}</span>
             {row.isPromptDone && (
-              <span className="text-green-300/80 transition-opacity duration-150">
+              <span className="text-green-400 transition-opacity duration-150">
                 {row.output}
                 {!row.isOutputDone && <span className="animate-pulse ml-0.5">▊</span>}
               </span>
             )}
-            {!row.isPromptDone && <span className="animate-pulse text-cyan-300/80">▊</span>}
+            {!row.isPromptDone && <span className="animate-pulse text-cyan-400">▊</span>}
           </div>
         ))}
 
         {done && (
           <div className="flex flex-wrap gap-x-2 leading-relaxed">
-            <span className="text-cyan-300/80 shrink-0">$</span>
-            <span className="text-cyan-200/70">{skipped ? 'Animation skipped.' : 'Ready.'}</span>
-            <span className="animate-pulse text-cyan-300/80 ml-1">▊</span>
+            <span className="text-cyan-400 shrink-0">$</span>
+            <span className="text-cyan-300">{skipped ? 'Animation skipped.' : 'Ready.'}</span>
+            <span className="animate-pulse text-cyan-400 ml-1">▊</span>
           </div>
         )}
       </div>

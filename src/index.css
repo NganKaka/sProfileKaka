@@ -23,31 +23,31 @@
 /* Light Theme Colors */
 @media (prefers-color-scheme: light) {
   @theme {
-    --color-primary: #b8860b;
-    --color-primary-fixed-dim: #9a7209;
+    --color-primary: #9a7209;
+    --color-primary-fixed-dim: #7d5e07;
     --color-background: #ffffff;
-    --color-surface: #f8f9fa;
-    --color-surface-container: #e9ecef;
-    --color-surface-container-low: #dee2e6;
-    --color-surface-container-high: #ced4da;
-    --color-surface-container-highest: #adb5bd;
-    --color-on-surface: #212529;
-    --color-secondary: #495057;
+    --color-surface: #f1f3f5;
+    --color-surface-container: #e3e7eb;
+    --color-surface-container-low: #d4dae0;
+    --color-surface-container-high: #c5cdd5;
+    --color-surface-container-highest: #b0bac4;
+    --color-on-surface: #1a1a1a;
+    --color-secondary: #3d4349;
   }
 }
 
 /* Light Theme Override (when class is applied) */
 .light {
-  --color-primary: #b8860b;
-  --color-primary-fixed-dim: #9a7209;
+  --color-primary: #9a7209;
+  --color-primary-fixed-dim: #7d5e07;
   --color-background: #ffffff;
-  --color-surface: #f8f9fa;
-  --color-surface-container: #e9ecef;
-  --color-surface-container-low: #dee2e6;
-  --color-surface-container-high: #ced4da;
-  --color-surface-container-highest: #adb5bd;
-  --color-on-surface: #212529;
-  --color-secondary: #495057;
+  --color-surface: #f1f3f5;
+  --color-surface-container: #e3e7eb;
+  --color-surface-container-low: #d4dae0;
+  --color-surface-container-high: #c5cdd5;
+  --color-surface-container-highest: #b0bac4;
+  --color-on-surface: #1a1a1a;
+  --color-secondary: #3d4349;
 }
 
 /* Dark Theme Override (when class is applied) */
@@ -181,7 +181,7 @@
 }
 
 .light .glass-card {
-  @apply bg-black/5 border-black/10;
+  @apply bg-black/[0.06] border-black/[0.18] shadow-md;
 }
 
 .ghost-border {
@@ -193,7 +193,7 @@
 }
 
 .light .ghost-border {
-  @apply border-black/10;
+  @apply border-black/[0.12];
 }
 
 .ambient-shadow {
@@ -266,7 +266,7 @@
   }
 
   .light .theme-card-bg {
-    @apply bg-black/5;
+    @apply bg-black/[0.02];
   }
 
   /* Borders */
@@ -279,7 +279,7 @@
   }
 
   .light .theme-border {
-    @apply border-black/10;
+    @apply border-black/[0.15];
   }
 
   .theme-border-subtle {
@@ -291,7 +291,7 @@
   }
 
   .light .theme-border-subtle {
-    @apply border-black/5;
+    @apply border-black/[0.08];
   }
 
   /* Hover backgrounds */
@@ -304,7 +304,7 @@
   }
 
   .light .theme-hover-bg:hover {
-    @apply bg-black/10;
+    @apply bg-black/[0.05];
   }
 
   /* Dividers */
@@ -317,8 +317,95 @@
   }
 
   .light .theme-divider {
-    @apply border-black/10;
+    @apply border-black/[0.12];
   }
+}
+
+/* Light mode global overrides for white-based utilities */
+.light [class*="bg-white/"] {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.light [class*="bg-white/[0.0"] {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.light [class*="border-white/"] {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+.light [class*="border-white/[0.0"] {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Light mode text adjustments */
+.light .text-secondary\/60,
+.light .text-secondary\/65,
+.light .text-secondary\/70 {
+  color: rgba(61, 67, 73, 0.85);
+}
+
+.light .text-secondary\/80,
+.light .text-secondary\/82,
+.light .text-secondary\/85 {
+  color: rgba(26, 26, 26, 0.95);
+}
+
+/* Light mode cyan adjustments for better contrast */
+.light .text-cyan-100\/60,
+.light .text-cyan-100\/75 {
+  color: rgba(6, 95, 145, 0.95);
+}
+
+.light .text-cyan-200,
+.light .text-cyan-300 {
+  color: rgb(6, 78, 119);
+}
+
+/* Light mode primary backgrounds */
+.light .bg-primary\/5,
+.light .bg-primary\/8 {
+  background-color: rgba(154, 114, 9, 0.08);
+}
+
+.light .bg-primary\/10 {
+  background-color: rgba(154, 114, 9, 0.12);
+}
+
+.light .bg-primary\/15 {
+  background-color: rgba(154, 114, 9, 0.18);
+}
+
+/* Light mode cyan backgrounds */
+.light .bg-cyan-400\/10,
+.light .bg-cyan-500\/10 {
+  background-color: rgba(6, 95, 145, 0.08);
+}
+
+.light .bg-cyan-950\/15 {
+  background-color: rgba(6, 95, 145, 0.05);
+}
+
+/* Light mode borders for accent colors */
+.light .border-primary\/20,
+.light .border-primary\/25 {
+  border-color: rgba(154, 114, 9, 0.4);
+}
+
+.light .border-primary\/35,
+.light .border-primary\/40,
+.light .border-primary\/50 {
+  border-color: rgba(154, 114, 9, 0.5);
+}
+
+.light .border-cyan-300\/10,
+.light .border-cyan-300\/20 {
+  border-color: rgba(6, 95, 145, 0.25);
+}
+
+.light .border-cyan-300\/35,
+.light .border-cyan-300\/40 {
+  border-color: rgba(6, 95, 145, 0.4);
 }
 
 .neon-border-content {

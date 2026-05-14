@@ -2,6 +2,8 @@
 period: 2026 — Present
 title: VNU-HCM, University of Technology
 institution: Master in Computer Science
+achievements:
+  - Coming Soon
 highlights:
   - Master
   - CS

@@ -2,6 +2,8 @@
 period: Next
 business: Future Opportunity
 role: Software Engineer
+details:
+  - Open to the next role where I can keep growing in backend engineering, product thinking, and production-ready system design
 highlights:
   - Growth
   - Backend Systems

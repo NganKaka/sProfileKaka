@@ -111,7 +111,7 @@ export default function SiteNavbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-lg border-b dark:border-white/5 light:border-black/10">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-lg border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-6">
         <div className="flex justify-between items-center">
           <a
@@ -183,7 +183,7 @@ export default function SiteNavbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18 }}
-              className="md:hidden mt-4 rounded-xl border dark:border-white/10 light:border-black/10 bg-background/90 backdrop-blur-md p-2"
+              className="md:hidden mt-4 rounded-xl border dark:border-white/10 light:border-black/[0.15] bg-background/90 backdrop-blur-md p-2"
             >
               <div className="grid gap-1">
                 {links.map((link) => {

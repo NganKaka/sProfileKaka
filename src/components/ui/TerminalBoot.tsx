@@ -86,7 +86,6 @@ export default function TerminalBoot() {
     shell.buildRows().map(() => ({ prompt: '', output: '', isPromptDone: false, isOutputDone: false })),
   );
   const [done, setDone] = useState(false);
-  const [skipped, setSkipped] = useState(false);
 
   const indexRef = useRef(0);
   const phaseRef = useRef<'prompt' | 'output'>('prompt');
@@ -99,14 +98,7 @@ export default function TerminalBoot() {
     setRows(next);
     setDisplayed(next.map(() => ({ prompt: '', output: '', isPromptDone: false, isOutputDone: false })));
     setDone(false);
-    setSkipped(false);
   }, [shellIndex]);
-
-  const skipAnimation = () => {
-    setDisplayed(rows.map((row) => ({ ...row, isPromptDone: true, isOutputDone: true })));
-    setDone(true);
-    setSkipped(true);
-  };
 
   useEffect(() => {
     if (done) return;
@@ -202,16 +194,6 @@ export default function TerminalBoot() {
             );
           })}
         </div>
-
-        {!done && (
-          <button
-            type="button"
-            onClick={skipAnimation}
-            className="shrink-0 rounded-md border border-cyan-300/30 bg-cyan-950/25 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-cyan-100/85 hover:border-cyan-300/55 hover:text-cyan-100 transition-colors"
-          >
-            Skip
-          </button>
-        )}
       </div>
 
       <div className="p-4 md:p-5 space-y-1.5 min-h-[240px]" aria-label="Terminal boot sequence">
@@ -231,7 +213,7 @@ export default function TerminalBoot() {
         {done && (
           <div className="flex flex-wrap gap-x-2 leading-relaxed">
             <span className={`${shell.promptColor} shrink-0`}>{shell.id === 'cmd' ? 'C:\\>' : shell.id === 'powershell' ? 'PS>' : '$'}</span>
-            <span className={shell.outputColor}>{skipped ? 'skipped.' : 'ready.'}</span>
+            <span className={shell.outputColor}>ready.</span>
             <span className={`animate-pulse ${shell.promptColor} ml-1`}>▊</span>
           </div>
         )}

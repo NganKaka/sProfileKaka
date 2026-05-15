@@ -5,6 +5,10 @@ import ScrollProgress from './components/ScrollProgress';
 import Spotlight from './components/Spotlight';
 import SmoothScroll from './components/SmoothScroll';
 import RouteTransition from './components/RouteTransition';
+import CursorTrail from './components/CursorTrail';
+import FilmGrain from './components/FilmGrain';
+import ScrollVignette from './components/ScrollVignette';
+import ScrollHueTint from './components/ScrollHueTint';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
@@ -30,7 +34,11 @@ export default function App() {
       <BrowserRouter>
         <SmoothScroll />
         <ScrollProgress />
+        <ScrollHueTint />
+        <ScrollVignette />
+        <FilmGrain />
         <Spotlight />
+        <CursorTrail />
         <AnimatePresence mode="wait">
           <AnimatedRoutes />
         </AnimatePresence>

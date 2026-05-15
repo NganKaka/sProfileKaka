@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle';
 import GlitchText from './ui/GlitchText';
+import LiveClock from './LiveClock';
 
 const links = [
   { label: 'About', href: '#about' },
@@ -152,13 +153,16 @@ export default function SiteNavbar() {
     <nav className="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-lg border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-6">
         <div className="flex justify-between items-center">
-          <Link
-            to="/"
-            onClick={handleLogoClick}
-            className="text-xl font-black text-primary tracking-tighter cursor-pointer"
-          >
-            sProfileKaka
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/"
+              onClick={handleLogoClick}
+              className="text-xl font-black text-primary tracking-tighter cursor-pointer"
+            >
+              sProfileKaka
+            </Link>
+            <LiveClock />
+          </div>
 
           <div className="hidden md:flex items-center space-x-8">
             {links.map((link) => {

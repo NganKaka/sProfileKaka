@@ -28,11 +28,28 @@ export default function PageTransition({ children }: PageTransitionProps) {
   );
 }
 
-export function SectionTransition({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
+export type SectionTransitionDirection = 'up' | 'left' | 'right';
+
+export function SectionTransition({
+  children,
+  delay = 0,
+  direction = 'up',
+}: {
+  children: ReactNode;
+  delay?: number;
+  direction?: SectionTransitionDirection;
+}) {
+  const initial =
+    direction === 'left'
+      ? { opacity: 0, x: -40, y: 0 }
+      : direction === 'right'
+      ? { opacity: 0, x: 40, y: 0 }
+      : { opacity: 0, x: 0, y: 30 };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={initial}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay, ease: 'easeOut' }}
     >

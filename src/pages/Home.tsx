@@ -67,12 +67,12 @@ export default function Home() {
       <SiteNavbar />
       <main id="main-content" className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 space-y-24">
         <ErrorBoundary>
-          <SectionTransition>
+          <SectionTransition direction="up">
             <Hero onImageModalChange={setHeroImageModalOpen} />
           </SectionTransition>
         </ErrorBoundary>
         <ErrorBoundary>
-          <SectionTransition delay={0.1}>
+          <SectionTransition delay={0.1} direction="left">
             <About />
           </SectionTransition>
         </ErrorBoundary>
@@ -101,17 +101,17 @@ export default function Home() {
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-20 space-y-24">
         <ErrorBoundary>
-          <SectionTransition delay={0.2}>
+          <SectionTransition delay={0.2} direction="right">
             <AcademicTimeline onImageModalChange={setAcademicImageModalOpen} />
           </SectionTransition>
         </ErrorBoundary>
         <ErrorBoundary>
-          <SectionTransition delay={0.1}>
+          <SectionTransition delay={0.1} direction="left">
             <ExperienceTimeline />
           </SectionTransition>
         </ErrorBoundary>
         <ErrorBoundary>
-          <SectionTransition delay={0.1}>
+          <SectionTransition delay={0.1} direction="up">
             <Skills />
           </SectionTransition>
         </ErrorBoundary>
@@ -130,7 +130,7 @@ export default function Home() {
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-20 space-y-24">
         <ErrorBoundary>
-          <SectionTransition delay={0.1}>
+          <SectionTransition delay={0.1} direction="right">
             <Projects />
           </SectionTransition>
         </ErrorBoundary>

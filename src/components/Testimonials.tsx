@@ -13,7 +13,6 @@ export default function Testimonials() {
     [
       '/content/testimonials/01-sarah-chen.md',
       '/content/testimonials/02-michael-tran.md',
-      '/content/testimonials/03-linh-nguyen.md',
     ],
     testimonialSchema
   );

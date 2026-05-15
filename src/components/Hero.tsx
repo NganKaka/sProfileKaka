@@ -97,9 +97,9 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
               const target = document.getElementById('projects');
               if (!target) return;
               if (window.__lenis) {
-                window.__lenis.scrollTo(target, { offset: -100 });
+                window.__lenis.scrollTo(target, { offset: -100, immediate: true });
               } else {
-                target.scrollIntoView({ behavior: 'smooth' });
+                target.scrollIntoView({ behavior: 'auto' });
               }
             }}
             colors={['#e9c349', '#22d3ee', '#a855f7', '#ffffff']}

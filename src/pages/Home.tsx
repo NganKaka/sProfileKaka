@@ -47,7 +47,11 @@ export default function Home() {
       const element = document.getElementById(location.hash.slice(1));
       if (element) {
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
+          if (window.__lenis) {
+            window.__lenis.scrollTo(element, { offset: -100, immediate: true });
+          } else {
+            element.scrollIntoView({ behavior: 'auto' });
+          }
         }, 100);
       }
     }

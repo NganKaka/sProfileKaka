@@ -6,6 +6,7 @@ import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
 import TiltCard from './ui/TiltCard';
+import PixelDisintegrateImage from './ui/PixelDisintegrateImage';
 import { trackProjectClick } from '../lib/analytics';
 import { ProjectGridSkeleton } from './LoadingSkeleton';
 
@@ -33,14 +34,16 @@ function ProjectAction({ href, label, variant, projectTitle }: { href: string; l
 function ProjectPreview({ project, featured }: { project: Project; featured: boolean }) {
   return (
     <div className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${featured ? 'min-h-[320px]' : 'min-h-[190px]'}`}>
-      <img
+      <PixelDisintegrateImage
         src={project.previewImage}
         alt={`${project.title} preview`}
-        className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-90"
+        blockSize={6}
+        duration={650}
+        className="absolute inset-0 h-full w-full"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/55 to-background/95 transition-opacity duration-500 group-hover:opacity-70" />
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-cyan-500/20 via-transparent to-primary/10" />
-      <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-background/65 p-4 backdrop-blur-md transition-all duration-500 group-hover:border-cyan-300/40 group-hover:bg-background/75 group-hover:translate-y-[-4px]">
+      <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/55 to-background/95 transition-opacity duration-500 group-hover:opacity-70 pointer-events-none" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-cyan-500/20 via-transparent to-primary/10 pointer-events-none" />
+      <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-background/65 p-4 backdrop-blur-md transition-all duration-500 group-hover:border-cyan-300/40 group-hover:bg-background/75 group-hover:translate-y-[-4px] pointer-events-none">
         <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-cyan-100/60">Preview</p>
         <p className="mt-1 font-headline text-xl font-bold text-on-surface">{project.title}</p>
       </div>

@@ -108,6 +108,16 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
           >
             View Projects
           </ConfettiBurst>
+          {profile.resumeUrl && (
+            <a
+              href={profile.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs font-bold tracking-[0.14em] uppercase border border-cyan-400/40 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/60 hover:bg-cyan-400/15 hover:text-cyan-100 transition-colors"
+            >
+              View CV
+            </a>
+          )}
         </div>
 
       </div>

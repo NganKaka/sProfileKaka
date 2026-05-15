@@ -86,7 +86,15 @@ export default function SectionNavIndicator() {
           <a
             key={section.id}
             href={`#${section.id}`}
-            onClick={() => lockTo(section.id)}
+            onClick={(e) => {
+              lockTo(section.id);
+              const el = document.getElementById(section.id);
+              if (!el) return;
+              if (window.__lenis) {
+                e.preventDefault();
+                window.__lenis.scrollTo(el, { offset: -100, lock: true });
+              }
+            }}
             aria-label={`Go to ${section.label}`}
             className="group relative flex items-center justify-end gap-3"
           >

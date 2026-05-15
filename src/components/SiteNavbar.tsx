@@ -41,12 +41,29 @@ export default function SiteNavbar() {
     }, 3000);
   };
 
-  const handleSectionClick = (target: string) => {
+  const handleSectionClick = (target: string, event?: { preventDefault: () => void }) => {
     lockActiveSection(target);
     setOpen(false);
+
+    // Only intercept when we're on the home page - on other pages the
+    // anchor href like "/#about" should just navigate normally.
+    if (!isHomePage) return;
+    if (!event) return;
+
+    event.preventDefault();
+    const id = target.startsWith('#') ? target.slice(1) : target;
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (window.__lenis) {
+      // lock: true blocks wheel/touch until the scroll lands
+      window.__lenis.scrollTo(el, { offset: -100, lock: true });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  const handleLogoClick = () => {
+  const handleLogoClick = (event: { preventDefault: () => void }) => {
     lockedTargetRef.current = null;
     if (lockTimeoutRef.current) {
       window.clearTimeout(lockTimeoutRef.current);
@@ -55,8 +72,12 @@ export default function SiteNavbar() {
     setActiveSection('');
     setOpen(false);
 
-    // If already on home page, scroll to top
-    if (isHomePage) {
+    if (!isHomePage) return;
+
+    event.preventDefault();
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { lock: true });
+    } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -146,7 +167,7 @@ export default function SiteNavbar() {
                   key={link.href}
                   href={getNavHref(link.href)}
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => isHomePage && handleSectionClick(link.href)}
+                  onClick={(e) => isHomePage && handleSectionClick(link.href, e)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`font-headline tracking-tighter uppercase text-[12px] font-bold transition-all duration-300 relative pb-1 px-2 py-1 rounded-md cursor-pointer ${
                     isActive
@@ -230,7 +251,7 @@ export default function SiteNavbar() {
                     <motion.a
                       key={link.href}
                       href={getNavHref(link.href)}
-                      onClick={() => isHomePage && handleSectionClick(link.href)}
+                      onClick={(e) => isHomePage && handleSectionClick(link.href, e)}
                       aria-current={isActive ? 'page' : undefined}
                       variants={{
                         open: { opacity: 1, x: 0 },

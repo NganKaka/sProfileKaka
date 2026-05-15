@@ -12,10 +12,6 @@ export default function SmoothScroll() {
     const lenis = new Lenis({
       lerp: 0.18,
       smoothWheel: true,
-      // Don't smooth-animate anchor / programmatic scrolls - jump directly
-      // so scroll-tied animations don't visibly run through every section
-      // on the way to the target.
-      anchors: { offset: -100, duration: 0 },
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });

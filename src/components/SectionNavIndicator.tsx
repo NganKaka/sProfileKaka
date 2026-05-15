@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const sections = [
@@ -12,9 +12,43 @@ const sections = [
 
 export default function SectionNavIndicator() {
   const [activeSection, setActiveSection] = useState('hero');
+  const lockedRef = useRef<string | null>(null);
+  const lockTimeoutRef = useRef<number | null>(null);
+
+  const lockTo = (id: string) => {
+    lockedRef.current = id;
+    setActiveSection(id);
+    if (lockTimeoutRef.current) window.clearTimeout(lockTimeoutRef.current);
+    // Safety release after 3s in case scroll never settles within tolerance
+    lockTimeoutRef.current = window.setTimeout(() => {
+      lockedRef.current = null;
+      lockTimeoutRef.current = null;
+    }, 3000);
+  };
 
   useEffect(() => {
     const updateActive = () => {
+      // While a click-target is locked, only release once we've actually
+      // settled near that target - otherwise the dot would hop through
+      // every section the smooth scroll passes.
+      if (lockedRef.current) {
+        const targetEl = document.getElementById(lockedRef.current);
+        if (!targetEl) {
+          lockedRef.current = null;
+        } else {
+          const { top } = targetEl.getBoundingClientRect();
+          if (Math.abs(top) < 80) {
+            lockedRef.current = null;
+            if (lockTimeoutRef.current) {
+              window.clearTimeout(lockTimeoutRef.current);
+              lockTimeoutRef.current = null;
+            }
+          } else {
+            return;
+          }
+        }
+      }
+
       const marker = window.innerHeight / 2;
       let nextActive = 'hero';
 
@@ -37,6 +71,7 @@ export default function SectionNavIndicator() {
     return () => {
       window.removeEventListener('scroll', updateActive);
       window.removeEventListener('resize', updateActive);
+      if (lockTimeoutRef.current) window.clearTimeout(lockTimeoutRef.current);
     };
   }, []);
 
@@ -51,6 +86,7 @@ export default function SectionNavIndicator() {
           <a
             key={section.id}
             href={`#${section.id}`}
+            onClick={() => lockTo(section.id)}
             aria-label={`Go to ${section.label}`}
             className="group relative flex items-center justify-end gap-3"
           >

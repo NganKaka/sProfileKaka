@@ -32,10 +32,13 @@ export default function SiteNavbar() {
     if (lockTimeoutRef.current) {
       window.clearTimeout(lockTimeoutRef.current);
     }
+    // Long enough that even a top-to-bottom Lenis smooth scroll arrives
+    // before the safety timeout fires; handleScrollEnd will normally clear
+    // it earlier when the target settles in view.
     lockTimeoutRef.current = window.setTimeout(() => {
       lockedTargetRef.current = null;
       lockTimeoutRef.current = null;
-    }, 700);
+    }, 3000);
   };
 
   const handleSectionClick = (target: string) => {

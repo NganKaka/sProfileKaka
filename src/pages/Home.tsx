@@ -47,11 +47,7 @@ export default function Home() {
       const element = document.getElementById(location.hash.slice(1));
       if (element) {
         setTimeout(() => {
-          if (window.__lenis) {
-            window.__lenis.scrollTo(element, { offset: -100, immediate: true });
-          } else {
-            element.scrollIntoView({ behavior: 'auto' });
-          }
+          element.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       }
     }

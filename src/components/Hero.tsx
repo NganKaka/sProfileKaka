@@ -8,7 +8,6 @@ import GradientText from './ui/GradientText';
 import CursorAware from './ui/CursorAware';
 import ConfettiBurst from './ui/ConfettiBurst';
 import SplitFlapCounter from './ui/SplitFlapCounter';
-import CodeWriter from './CodeWriter';
 import FadeInImage from '../lib/FadeInImage';
 import MorphingBlob from './MorphingBlob';
 
@@ -70,10 +69,7 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2">
-          <TerminalBoot />
-          <CodeWriter />
-        </div>
+        <TerminalBoot />
 
         <div className="grid grid-cols-1 sm:grid-cols-[0.7fr_0.8fr_1.5fr] gap-3">
           {profile.stats.map((stat) => {

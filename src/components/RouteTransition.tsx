@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface RouteTransitionProps {
@@ -9,8 +9,17 @@ interface RouteTransitionProps {
 export default function RouteTransition({ children }: RouteTransitionProps) {
   const location = useLocation();
   const [showCRT, setShowCRT] = useState(false);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
+    // Don't fire the CRT flash on initial mount - that scaled measurements
+    // for ScrollTrigger and made the constellations look squashed during
+    // the entry animation.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     setShowCRT(true);
     const timer = setTimeout(() => setShowCRT(false), 700);
     return () => clearTimeout(timer);
@@ -18,7 +27,7 @@ export default function RouteTransition({ children }: RouteTransitionProps) {
 
   return (
     <>
-      {/* CRT power-off overlay: page collapses to a horizontal line, then a single dot */}
+      {/* CRT power-off scanline overlay (decoration only - does NOT transform the page) */}
       <AnimatePresence>
         {showCRT && (
           <motion.div
@@ -26,9 +35,8 @@ export default function RouteTransition({ children }: RouteTransitionProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-[9998] pointer-events-none flex items-center justify-center bg-black/0"
+            className="fixed inset-0 z-[9998] pointer-events-none flex items-center justify-center"
           >
-            {/* Horizontal scanline that briefly flashes across */}
             <motion.div
               initial={{ scaleY: 0, scaleX: 1, opacity: 0 }}
               animate={{
@@ -48,17 +56,14 @@ export default function RouteTransition({ children }: RouteTransitionProps) {
         )}
       </AnimatePresence>
 
+      {/* Page content fades + slides slightly. Crucially does NOT scale,
+          so child measurements (ScrollTrigger, canvas sizing) stay correct. */}
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, scaleY: 0.04, filter: 'brightness(2.5)' }}
-        animate={{ opacity: 1, scaleY: 1, filter: 'brightness(1)' }}
-        exit={{ opacity: 0, scaleY: 0.04, filter: 'brightness(2.5)' }}
-        transition={{
-          duration: 0.5,
-          ease: [0.22, 1, 0.36, 1],
-          scaleY: { duration: 0.45, ease: [0.34, 1.5, 0.64, 1] },
-        }}
-        style={{ transformOrigin: 'center' }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.div>

@@ -10,14 +10,14 @@ declare global {
 export default function SmoothScroll() {
   useEffect(() => {
     const lenis = new Lenis({
-      // 0.35 instead of 0.18: snappier response so scroll-tied animations
-      // (academic trace, scroll progress bar, useScroll-based effects)
-      // track user input within ~3 frames instead of ~6. Smooth feel is
-      // preserved on slow scrolls; fast scrolls now resolve quickly.
+      // smoothWheel disabled: native wheel scroll has 0 lag, which keeps
+      // scroll-tied animations (academic trace, scroll progress, useScroll
+      // hooks) glued to user input. Lenis stays loaded only for explicit
+      // scrollTo calls (navbar clicks, hero CTA) where we still want the
+      // smooth animation + lock:true to prevent input mid-flight.
+      smoothWheel: false,
+      smoothTouch: false,
       lerp: 0.35,
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
     });
 
     // Expose for components that need to scroll programmatically

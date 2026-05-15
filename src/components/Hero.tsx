@@ -10,6 +10,7 @@ import ConfettiBurst from './ui/ConfettiBurst';
 import SplitFlapCounter from './ui/SplitFlapCounter';
 import FadeInImage from '../lib/FadeInImage';
 import MorphingBlob from './MorphingBlob';
+import { smoothScrollTo } from './SmoothScroll';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -28,6 +29,8 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
   }, [showProfileImage]);
 
   const profileImageSrc = profile.profileImage ?? profile.heroImage;
+  const profileImageSrcSet = profile.profileImageSrcSet;
+  const profileImageSizes = profile.profileImageSizes;
   const profileImageAlt = `Portrait of ${profile.name}`;
 
 
@@ -96,11 +99,7 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
             onClick={() => {
               const target = document.getElementById('projects');
               if (!target) return;
-              if (window.__lenis) {
-                window.__lenis.scrollTo(target, { offset: -100 });
-              } else {
-                target.scrollIntoView({ behavior: 'smooth' });
-              }
+              smoothScrollTo(target, { offset: -100 });
             }}
             colors={['#e9c349', '#22d3ee', '#a855f7', '#ffffff']}
             particleCount={20}
@@ -137,6 +136,8 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
           >
             <FadeInImage
               src={profileImageSrc}
+              srcSet={profileImageSrcSet}
+              sizes={profileImageSizes}
               alt={profileImageAlt}
               loading="eager"
               fetchPriority="high"

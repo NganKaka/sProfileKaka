@@ -1,41 +1,58 @@
-import { useEffect } from 'react';
-import Lenis from 'lenis';
+/**
+ * Lenis is loaded lazily on the first programmatic scroll request, since
+ * smoothWheel is off and the only reason we need it is for the locked
+ * smooth `scrollTo` used by nav clicks. Native `scrollIntoView` handles
+ * everything else — no upfront cost on initial Home load.
+ */
+
+type LenisInstance = {
+  scrollTo: (target: HTMLElement | number, options?: { offset?: number; lock?: boolean }) => void;
+  destroy: () => void;
+  raf: (time: number) => void;
+};
 
 declare global {
   interface Window {
-    __lenis?: Lenis;
+    __lenis?: LenisInstance;
   }
 }
 
-export default function SmoothScroll() {
-  useEffect(() => {
-    const lenis = new Lenis({
-      // smoothWheel disabled: native wheel scroll has 0 lag, which keeps
-      // scroll-tied animations (academic trace, scroll progress, useScroll
-      // hooks) glued to user input. Lenis stays loaded only for explicit
-      // scrollTo calls (navbar clicks, hero CTA) where we still want the
-      // smooth animation + lock:true to prevent input mid-flight.
-      smoothWheel: false,
-      smoothTouch: false,
-      lerp: 0.35,
-    });
+let initPromise: Promise<LenisInstance | null> | null = null;
 
-    // Expose for components that need to scroll programmatically
+function ensureLenis(): Promise<LenisInstance | null> {
+  if (window.__lenis) return Promise.resolve(window.__lenis);
+  if (initPromise) return initPromise;
+
+  initPromise = import('lenis').then(({ default: Lenis }) => {
+    const lenis = new Lenis({ smoothWheel: false, lerp: 0.35 }) as unknown as LenisInstance;
     window.__lenis = lenis;
-
-    let rafId: number;
-    function raf(time: number) {
+    const raf = (time: number) => {
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      delete window.__lenis;
-      lenis.destroy();
+      requestAnimationFrame(raf);
     };
-  }, []);
+    requestAnimationFrame(raf);
+    return lenis;
+  }).catch(() => null);
 
+  return initPromise;
+}
+
+export function smoothScrollTo(target: HTMLElement | number, options?: { offset?: number }) {
+  ensureLenis().then((lenis) => {
+    if (lenis) {
+      lenis.scrollTo(target, { lock: true, offset: options?.offset });
+      return;
+    }
+    if (typeof target === 'number') {
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    } else {
+      const offset = options?.offset ?? 0;
+      const top = target.getBoundingClientRect().top + window.scrollY + offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+}
+
+export default function SmoothScroll() {
   return null;
 }

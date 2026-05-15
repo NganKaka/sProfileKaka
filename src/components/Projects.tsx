@@ -1,13 +1,14 @@
 import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText, Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import { useContentList } from '../hooks/useContent';
+import { loadProjects } from '../lib/contentLoader';
 import { projectSchema, type Project } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
 import TiltCard from './ui/TiltCard';
 import { trackProjectClick } from '../lib/analytics';
-import { ProjectGridSkeleton } from './LoadingSkeleton';
+
+const projectEntries = loadProjects(projectSchema);
 
 function ProjectAction({ href, label, variant, projectTitle }: { href: string; label: string; variant: 'live' | 'code' | 'case'; projectTitle: string }) {
   const Icon = variant === 'live' ? ExternalLink : variant === 'code' ? Code2 : FileText;
@@ -120,15 +121,7 @@ export default function Projects() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
-  // Load projects from MDX files
-  const { items: projects, loading, error } = useContentList<Project>(
-    [
-      '/content/projects/01-stripkaka.md',
-      '/content/projects/02-portfolio-systems.md',
-      '/content/projects/03-product-storytelling.md',
-    ],
-    projectSchema
-  );
+  const projects = projectEntries;
 
   // Get all unique tags from projects
   const allTags = useMemo(() => {
@@ -152,36 +145,6 @@ export default function Projects() {
       return matchesSearch && matchesTag;
     });
   }, [projects, searchQuery, selectedTag]);
-
-  // Show loading state
-  if (loading) {
-    return (
-      <section id="projects" className="space-y-7 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Projects"
-          title="Featured work"
-          subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
-        />
-        <ProjectGridSkeleton count={3} />
-      </section>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <section id="projects" className="space-y-7 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Projects"
-          title="Featured work"
-          subtitle="Selected projects and experiments with role, stack, execution details, and proof of delivery."
-        />
-        <div className="glass-card rounded-2xl p-8 text-center">
-          <p className="text-red-400">Failed to load projects. Please try again later.</p>
-        </div>
-      </section>
-    );
-  }
 
   const featuredProject = filteredProjects.find((p) => p.data.featured) ?? filteredProjects[0];
   const secondaryProjects = filteredProjects.filter((p) => p !== featuredProject);

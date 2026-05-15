@@ -1,110 +1,157 @@
-import matter from 'gray-matter';
 import { z } from 'zod';
 
 /**
- * Content Loader Utility
- * Loads and parses MDX files with frontmatter validation
+ * Build-time content loader. Markdown files under src/content are pulled in by
+ * Vite's import.meta.glob in raw mode and parsed once at module init. No
+ * runtime fetch, no gray-matter, no Buffer polyfill.
  */
 
+type ParsedFrontmatter = Record<string, unknown>;
+
 /**
- * Load a single MDX file with frontmatter
+ * Tiny YAML-frontmatter parser. Supports the subset used by this project:
+ * - scalars: strings, numbers, booleans
+ * - block sequences (`- item`) of scalars
+ * - quoted strings ("..." or '...')
+ *
+ * Anything more complex than that should be added intentionally.
  */
-export async function loadMDXFile<T>(
-  path: string,
-  schema: z.ZodSchema<T>
-): Promise<{ data: T; content: string }> {
-  try {
-    const response = await fetch(path);
-    if (!response.ok) {
-      throw new Error(`Failed to load ${path}: ${response.statusText}`);
+function parseFrontmatter(raw: string): { data: ParsedFrontmatter; content: string } {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!match) return { data: {}, content: raw };
+
+  const [, head, body] = match;
+  const data: ParsedFrontmatter = {};
+  const lines = head.split(/\r?\n/);
+
+  let currentKey: string | null = null;
+  let currentList: string[] | null = null;
+
+  for (const rawLine of lines) {
+    if (!rawLine.trim()) continue;
+    const listMatch = rawLine.match(/^\s+-\s+(.*)$/);
+
+    if (listMatch && currentKey && currentList) {
+      currentList.push(unquote(listMatch[1].trim()));
+      continue;
     }
 
-    const fileContent = await response.text();
-    const { data, content } = matter(fileContent);
+    const kv = rawLine.match(/^([A-Za-z0-9_]+)\s*:\s*(.*)$/);
+    if (!kv) continue;
 
-    // Validate frontmatter with schema
-    const validatedData = schema.parse(data);
+    if (currentKey && currentList) {
+      data[currentKey] = currentList;
+    }
 
-    return {
-      data: validatedData,
-      content,
-    };
-  } catch (error) {
-    console.error(`Error loading MDX file ${path}:`, error);
-    throw error;
+    const [, key, valueRaw] = kv;
+    const value = valueRaw.trim();
+
+    if (value === '') {
+      currentKey = key;
+      currentList = [];
+    } else {
+      currentKey = null;
+      currentList = null;
+      data[key] = coerce(unquote(value));
+    }
   }
+
+  if (currentKey && currentList) {
+    data[currentKey] = currentList;
+  }
+
+  return { data, content: body ?? '' };
 }
 
-/**
- * Load multiple MDX files from a directory
- */
-export async function loadMDXFiles<T>(
-  paths: string[],
-  schema: z.ZodSchema<T>
-): Promise<Array<{ data: T; content: string; path: string }>> {
-  const results = await Promise.all(
-    paths.map(async (path) => {
-      try {
-        const result = await loadMDXFile(path, schema);
-        return { ...result, path };
-      } catch (error) {
-        console.error(`Failed to load ${path}:`, error);
-        return null;
-      }
-    })
-  );
-
-  return results.filter((result): result is { data: T; content: string; path: string } => result !== null);
+function unquote(value: string): string {
+  if (value.length >= 2) {
+    const first = value[0];
+    const last = value[value.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      return value.slice(1, -1);
+    }
+  }
+  return value;
 }
 
-/**
- * Load all MDX files from a directory pattern
- * Note: In production, you'll need to explicitly list files or use a build-time plugin
- */
-export async function loadMDXDirectory<T>(
-  directory: string,
-  schema: z.ZodSchema<T>
-): Promise<Array<{ data: T; content: string; filename: string }>> {
-  // This is a placeholder - in a real implementation, you'd use:
-  // 1. Vite's import.meta.glob for build-time file discovery
-  // 2. Or explicitly list files in the directory
-
-  console.warn('loadMDXDirectory requires explicit file listing or build-time plugin');
-  return [];
+function coerce(value: string): unknown {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  if (value === 'null') return null;
+  if (/^-?\d+$/.test(value)) return Number(value);
+  if (/^-?\d+\.\d+$/.test(value)) return Number(value);
+  return value;
 }
 
-/**
- * Parse frontmatter from a string
- */
-export function parseFrontmatter<T>(
-  content: string,
-  schema: z.ZodSchema<T>
-): { data: T; content: string } {
-  const { data, content: body } = matter(content);
-  const validatedData = schema.parse(data);
+export type LoadedContent<T> = {
+  data: T;
+  content: string;
+  /** Path relative to /src, with leading slash. Stable identifier for keys. */
+  path: string;
+};
 
-  return {
-    data: validatedData,
-    content: body,
-  };
+type RawModules = Record<string, string>;
+
+function buildEntries<T>(modules: RawModules, schema: z.ZodSchema<T>): LoadedContent<T>[] {
+  return Object.keys(modules)
+    .sort()
+    .map((path) => {
+      const raw = modules[path];
+      const { data, content } = parseFrontmatter(raw);
+      const validated = schema.parse(data);
+      return { data: validated, content, path };
+    });
 }
 
-/**
- * Validate frontmatter data against a schema
- */
-export function validateFrontmatter<T>(
-  data: unknown,
-  schema: z.ZodSchema<T>
-): T {
-  return schema.parse(data);
+const academicModules = import.meta.glob('/src/content/academic/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as RawModules;
+
+const experienceModules = import.meta.glob('/src/content/experience/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as RawModules;
+
+const projectModules = import.meta.glob('/src/content/projects/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as RawModules;
+
+const blogModules = import.meta.glob('/src/content/blog/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as RawModules;
+
+const testimonialModules = import.meta.glob('/src/content/testimonials/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as RawModules;
+
+export function loadAcademic<T>(schema: z.ZodSchema<T>) {
+  return buildEntries(academicModules, schema);
+}
+export function loadExperience<T>(schema: z.ZodSchema<T>) {
+  return buildEntries(experienceModules, schema);
+}
+export function loadProjects<T>(schema: z.ZodSchema<T>) {
+  return buildEntries(projectModules, schema);
+}
+export function loadBlog<T>(schema: z.ZodSchema<T>) {
+  return buildEntries(blogModules, schema);
+}
+export function loadTestimonials<T>(schema: z.ZodSchema<T>) {
+  return buildEntries(testimonialModules, schema);
 }
 
-/**
- * Helper to get all files matching a glob pattern using Vite's import.meta.glob
- * This should be used at build time
- */
-export function getContentFiles(pattern: string) {
-  // Example usage in a component:
-  // const files = import.meta.glob('/content/**/*.mdx', { eager: true });
-  return import.meta.glob(pattern, { eager: false, as: 'raw' });
+export function loadBlogBySlug<T extends { slug: string }>(
+  slug: string,
+  schema: z.ZodSchema<T>,
+): LoadedContent<T> | null {
+  return loadBlog(schema).find((entry) => entry.data.slug === slug) ?? null;
 }

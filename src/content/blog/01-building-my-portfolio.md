@@ -9,7 +9,7 @@ tags:
   - Vite
   - Portfolio
 readTime: 5
-coverImage: /profile-photo.png
+coverImage: /profile-photo.webp
 featured: true
 ---
 

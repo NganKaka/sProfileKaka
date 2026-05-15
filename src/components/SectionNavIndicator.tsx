@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { smoothScrollTo } from './SmoothScroll';
 
 const sections = [
   { id: 'hero', label: 'Home' },
@@ -27,10 +28,11 @@ export default function SectionNavIndicator() {
   };
 
   useEffect(() => {
-    const updateActive = () => {
-      // While a click-target is locked, only release once we've actually
-      // settled near that target - otherwise the dot would hop through
-      // every section the smooth scroll passes.
+    let queued = false;
+    let raf = 0;
+
+    const compute = () => {
+      queued = false;
       if (lockedRef.current) {
         const targetEl = document.getElementById(lockedRef.current);
         if (!targetEl) {
@@ -64,11 +66,18 @@ export default function SectionNavIndicator() {
       setActiveSection(nextActive);
     };
 
-    updateActive();
+    const updateActive = () => {
+      if (queued) return;
+      queued = true;
+      raf = requestAnimationFrame(compute);
+    };
+
+    compute();
     window.addEventListener('scroll', updateActive, { passive: true });
     window.addEventListener('resize', updateActive);
 
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener('scroll', updateActive);
       window.removeEventListener('resize', updateActive);
       if (lockTimeoutRef.current) window.clearTimeout(lockTimeoutRef.current);
@@ -90,10 +99,8 @@ export default function SectionNavIndicator() {
               lockTo(section.id);
               const el = document.getElementById(section.id);
               if (!el) return;
-              if (window.__lenis) {
-                e.preventDefault();
-                window.__lenis.scrollTo(el, { offset: -100, lock: true });
-              }
+              e.preventDefault();
+              smoothScrollTo(el, { offset: -100 });
             }}
             aria-label={`Go to ${section.label}`}
             className="group relative flex items-center justify-end gap-3"

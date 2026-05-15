@@ -8,7 +8,7 @@ tags:
   - Performance
   - React
 readTime: 3
-coverImage: /profile-photo.png
+coverImage: /profile-photo.webp
 featured: false
 ---
 

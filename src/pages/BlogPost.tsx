@@ -1,75 +1,33 @@
 import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import matter from 'gray-matter';
-import { blogPostSchema, type BlogPost as BlogPostType } from '../schemas/content';
+import { useMemo } from 'react';
+import { loadBlogBySlug } from '../lib/contentLoader';
+import { blogPostSchema } from '../schemas/content';
 import SiteNavbar from '../components/SiteNavbar';
 import SiteFooter from '../components/SiteFooter';
 
-const blogPaths: Record<string, string> = {
-  'building-my-portfolio': '/content/blog/01-building-my-portfolio.md',
-  'skeletons-vs-spinners': '/content/blog/02-skeletons-vs-spinners.md',
-  'math-to-code-journey': '/content/blog/03-math-to-code-journey.md',
-};
-
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPostType | null>(null);
-  const [content, setContent] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!slug) return;
-    const path = blogPaths[slug];
-    if (!path) {
-      setError('Post not found');
-      setLoading(false);
-      return;
-    }
-
-    fetch(path)
-      .then((res) => res.text())
-      .then((text) => {
-        const { data, content: body } = matter(text);
-        const validated = blogPostSchema.parse(data);
-        setPost(validated);
-        setContent(body);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [slug]);
+  const entry = useMemo(() => (slug ? loadBlogBySlug(slug, blogPostSchema) : null), [slug]);
 
   if (!slug) return <Navigate to="/blog" />;
-  if (error) return <Navigate to="/404" />;
+  if (!entry) return <Navigate to="/404" />;
+
+  const post = entry.data;
+  const content = entry.content;
 
   return (
     <div className="min-h-screen relative text-on-surface">
       <SiteNavbar />
 
       <main className="relative z-10 max-w-3xl mx-auto px-6 md:px-12 pt-32 pb-20">
-        {loading ? (
-          <div className="space-y-6">
-            <div className="h-8 w-32 bg-white/5 rounded-lg animate-pulse" />
-            <div className="h-12 w-3/4 bg-white/5 rounded-lg animate-pulse" />
-            <div className="h-64 w-full bg-white/5 rounded-2xl animate-pulse" />
-            <div className="space-y-3">
-              <div className="h-4 w-full bg-white/5 rounded animate-pulse" />
-              <div className="h-4 w-5/6 bg-white/5 rounded animate-pulse" />
-              <div className="h-4 w-4/6 bg-white/5 rounded animate-pulse" />
-            </div>
-          </div>
-        ) : post ? (
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="space-y-8"
-          >
+        <motion.article
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="space-y-8"
+        >
             <Link
               to="/blog"
               className="inline-flex items-center gap-2 text-sm font-tech uppercase tracking-[0.14em] text-secondary/70 hover:text-cyan-300 transition-colors"
@@ -127,12 +85,11 @@ export default function BlogPost() {
             )}
 
             <div className="prose prose-invert max-w-none prose-headings:font-headline prose-headings:text-on-surface prose-p:text-secondary/85 prose-a:text-cyan-300 prose-strong:text-on-surface prose-code:text-cyan-300 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0a0e14] prose-pre:border prose-pre:border-white/10">
-              <pre className="whitespace-pre-wrap font-body text-secondary/85 leading-relaxed bg-transparent border-0 p-0">
-                {content}
-              </pre>
-            </div>
-          </motion.article>
-        ) : null}
+            <pre className="whitespace-pre-wrap font-body text-secondary/85 leading-relaxed bg-transparent border-0 p-0">
+              {content}
+            </pre>
+          </div>
+        </motion.article>
       </main>
 
       <SiteFooter />

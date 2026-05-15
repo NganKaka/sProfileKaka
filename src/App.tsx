@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -8,22 +9,24 @@ import RouteTransition from './components/RouteTransition';
 import CursorTrail from './components/CursorTrail';
 import FilmGrain from './components/FilmGrain';
 import ScrollVignette from './components/ScrollVignette';
-import ScrollHueTint from './components/ScrollHueTint';
 import Home from './pages/Home';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
 import NotFound from './components/NotFound';
+
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
     <RouteTransition>
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </RouteTransition>
   );
 }
@@ -34,7 +37,6 @@ export default function App() {
       <BrowserRouter>
         <SmoothScroll />
         <ScrollProgress />
-        <ScrollHueTint />
         <ScrollVignette />
         <FilmGrain />
         <Spotlight />

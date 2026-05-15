@@ -1,11 +1,10 @@
 import { motion, AnimatePresence, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useContentList } from '../hooks/useContent';
+import { loadAcademic } from '../lib/contentLoader';
 import { academicSchema, type Academic } from '../schemas/content';
 import FadeInImage from '../lib/FadeInImage';
 import SectionHeading from './ui/SectionHeading';
-import { AcademicTimelineSkeleton } from './LoadingSkeleton';
 
 type ActiveTimelineImage = {
   src: string;
@@ -14,6 +13,9 @@ type ActiveTimelineImage = {
   imageIndex: number;
 };
 
+const academicEntries = loadAcademic(academicSchema);
+const academicTimeline: Academic[] = academicEntries.map((entry) => entry.data);
+
 export default function AcademicTimeline({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const nodeRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -21,19 +23,6 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
   const [activeImage, setActiveImage] = useState<ActiveTimelineImage | null>(null);
   const { scrollYProgress } = useScroll({ target: timelineRef, offset: ['start 80%', 'end 20%'] });
   const traceScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
-  // Load academic timeline from MDX files
-  const { items: academics, loading, error } = useContentList<Academic>(
-    [
-      '/content/academic/01-thong-tay-hoi.md',
-      '/content/academic/02-le-hong-phong.md',
-      '/content/academic/03-university-bachelor.md',
-      '/content/academic/04-university-master.md',
-    ],
-    academicSchema
-  );
-
-  const academicTimeline = academics.map(a => a.data);
 
   const galleryImages = useMemo(
     () =>
@@ -98,36 +87,6 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
     const nextIndex = (activeImageIndex + direction + galleryImages.length) % galleryImages.length;
     setActiveImage(galleryImages[nextIndex]);
   };
-
-  // Show loading state
-  if (loading) {
-    return (
-      <section id="academics" className="space-y-8 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Academic Process"
-          title="Learning timeline"
-          subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
-        />
-        <AcademicTimelineSkeleton count={4} />
-      </section>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <section id="academics" className="space-y-8 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Academic Process"
-          title="Learning timeline"
-          subtitle="Milestones from study foundations to practical product-building, told through story and visual memory."
-        />
-        <div className="glass-card rounded-2xl p-8 text-center">
-          <p className="text-red-400">Failed to load academic timeline. Please try again later.</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="academics" className="space-y-8 scroll-mt-28">
@@ -256,8 +215,8 @@ export default function AcademicTimeline({ onImageModalChange }: { onImageModalC
 }
 
 function TimelineNode({ index, progress, nodePoint }: { index: number; progress: MotionValue<number>; nodePoint: number }) {
-  const completed = useTransform(progress, (value) => (value >= nodePoint - 0.01 ? 1 : 0));
-  const touch = useTransform(progress, (value) => {
+  const completed = useTransform<number, number>(progress, (value) => (value >= nodePoint - 0.01 ? 1 : 0));
+  const touch = useTransform<number, number>(progress, (value) => {
     const radius = 0.02;
     if (value < nodePoint - radius || value > nodePoint + radius) return 0;
     const distance = Math.abs(value - nodePoint);

@@ -1,21 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useContentList } from '../hooks/useContent';
+import { loadTestimonials } from '../lib/contentLoader';
 import { testimonialSchema, type Testimonial } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
+
+const testimonialEntries = loadTestimonials(testimonialSchema);
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const { items: testimonials, loading, error } = useContentList<Testimonial>(
-    [
-      '/content/testimonials/01-sarah-chen.md',
-      '/content/testimonials/02-michael-tran.md',
-    ],
-    testimonialSchema
-  );
+  const testimonials = testimonialEntries;
 
   useEffect(() => {
     if (testimonials.length === 0) return;
@@ -37,20 +33,7 @@ export default function Testimonials() {
     });
   };
 
-  if (loading) {
-    return (
-      <section id="testimonials" className="space-y-7 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Testimonials"
-          title="What people say"
-          subtitle="Words from teammates and collaborators."
-        />
-        <div className="glass-card rounded-2xl p-12 min-h-[300px] animate-pulse" />
-      </section>
-    );
-  }
-
-  if (error || testimonials.length === 0) return null;
+  if (testimonials.length === 0) return null;
 
   const current = testimonials[currentIndex].data;
 

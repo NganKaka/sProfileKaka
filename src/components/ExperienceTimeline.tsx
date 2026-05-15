@@ -1,32 +1,17 @@
 import { useLayoutEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useContentList } from '../hooks/useContent';
+import { loadExperience } from '../lib/contentLoader';
 import { experienceSchema, type Experience } from '../schemas/content';
 import SectionHeading from './ui/SectionHeading';
-import { TimelineSkeleton } from './LoadingSkeleton';
 
-gsap.registerPlugin(ScrollTrigger);
+const experienceEntries = loadExperience(experienceSchema);
+const railStops: Experience[] = experienceEntries.map((entry) => entry.data);
 
 export default function ExperienceTimeline() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const desktopRef = useRef<HTMLDivElement | null>(null);
 
-  // Load experience from MDX files
-  const { items: experiences, loading, error } = useContentList<Experience>(
-    [
-      '/content/experience/01-ai-power.md',
-      '/content/experience/02-pi-associates.md',
-      '/content/experience/03-future-software-engineer.md',
-      '/content/experience/04-future-ai-engineer.md',
-      '/content/experience/05-future-product-engineer.md',
-    ],
-    experienceSchema
-  );
-
-  const railStops = experiences.map(e => e.data);
   const nodeXs = railStops.map((_, index) => {
     if (railStops.length === 1) return 450;
     return 5 + index * (890 / (railStops.length - 1));
@@ -42,65 +27,52 @@ export default function ExperienceTimeline() {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
     if (!mediaQuery.matches || !trackRef.current || !desktopRef.current || railStops.length === 0) return;
 
-    const ctx = gsap.context(() => {
-      const panels = gsap.utils.toArray<HTMLElement>('.experience-panel');
-      if (panels.length <= 1) return;
+    let cleanup: (() => void) | undefined;
+    let cancelled = false;
 
-      gsap.to(panels, {
-        xPercent: -100 * (panels.length - 1),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: desktopRef.current,
-          pin: true,
-          scrub: 1,
-          end: `+=${panels.length * 900}`,
-        },
-      });
+    (async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ]);
+      if (cancelled || !desktopRef.current) return;
+      gsap.registerPlugin(ScrollTrigger);
 
-      gsap.to('.experience-progress-mask', {
-        width: '100%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: desktopRef.current,
-          start: 'top top',
-          end: `+=${panels.length * 900}`,
-          scrub: 1,
-        },
-      });
-    }, desktopRef);
+      const ctx = gsap.context(() => {
+        const panels = gsap.utils.toArray<HTMLElement>('.experience-panel');
+        if (panels.length <= 1) return;
 
-    return () => ctx.revert();
-  }, [railStops.length]);
+        gsap.to(panels, {
+          xPercent: -100 * (panels.length - 1),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: desktopRef.current,
+            pin: true,
+            scrub: 1,
+            end: `+=${panels.length * 900}`,
+          },
+        });
 
-  // Show loading state
-  if (loading) {
-    return (
-      <section id="experience" className="space-y-8 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Experience"
-          title="Work timeline"
-          subtitle="Professional milestones across product delivery, frontend engineering, and interface storytelling."
-        />
-        <TimelineSkeleton count={5} />
-      </section>
-    );
-  }
+        gsap.to('.experience-progress-mask', {
+          width: '100%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: desktopRef.current,
+            start: 'top top',
+            end: `+=${panels.length * 900}`,
+            scrub: 1,
+          },
+        });
+      }, desktopRef);
 
-  // Show error state
-  if (error) {
-    return (
-      <section id="experience" className="space-y-8 scroll-mt-28">
-        <SectionHeading
-          eyebrow="Experience"
-          title="Work timeline"
-          subtitle="Professional milestones across product delivery, frontend engineering, and interface storytelling."
-        />
-        <div className="glass-card rounded-2xl p-8 text-center">
-          <p className="text-red-400">Failed to load experience. Please try again later.</p>
-        </div>
-      </section>
-    );
-  }
+      cleanup = () => ctx.revert();
+    })();
+
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, []);
 
   return (
     <section id="experience" className="space-y-8 scroll-mt-28">

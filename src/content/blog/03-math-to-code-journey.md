@@ -8,7 +8,7 @@ tags:
   - Engineering
   - Mindset
 readTime: 4
-coverImage: /profile-photo.png
+coverImage: /profile-photo.webp
 featured: false
 ---
 

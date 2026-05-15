@@ -18,10 +18,11 @@ export default function ThemeToggle() {
     );
 
     // Use View Transitions API if available, otherwise fall back to instant
-    // @ts-expect-error - startViewTransition is not yet in standard types
-    if (typeof document.startViewTransition === 'function') {
-      // @ts-expect-error
-      const transition = document.startViewTransition(() => setTheme(value));
+    const startViewTransition = (document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    }).startViewTransition;
+    if (typeof startViewTransition === 'function') {
+      const transition = startViewTransition.call(document, () => setTheme(value));
 
       transition.ready.then(() => {
         document.documentElement.animate(

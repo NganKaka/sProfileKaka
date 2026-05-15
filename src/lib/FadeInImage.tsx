@@ -7,9 +7,20 @@ export type FadeInImageProps = {
   loading?: 'eager' | 'lazy';
   decoding?: 'sync' | 'async' | 'auto';
   fetchPriority?: 'high' | 'low' | 'auto';
+  srcSet?: string;
+  sizes?: string;
 };
 
-export default function FadeInImage({ src, alt, className, loading = 'lazy', decoding = 'async', fetchPriority }: FadeInImageProps) {
+export default function FadeInImage({
+  src,
+  alt,
+  className,
+  loading = 'lazy',
+  decoding = 'async',
+  fetchPriority,
+  srcSet,
+  sizes,
+}: FadeInImageProps) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,6 +38,8 @@ export default function FadeInImage({ src, alt, className, loading = 'lazy', dec
       <img
         key={src}
         src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={alt}
         className={className}
         loading={loading}

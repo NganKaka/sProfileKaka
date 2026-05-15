@@ -1,8 +1,6 @@
-import { motion } from 'framer-motion';
-
 interface MarqueeItem {
   label: string;
-  icon?: string; // Image URL for the logo
+  icon?: string;
 }
 
 interface MarqueeProps {
@@ -12,10 +10,14 @@ interface MarqueeProps {
   className?: string;
   separator?: string;
   showLogos?: boolean;
-  /** Style variant for text-only marquees */
   variant?: 'display' | 'subtle';
 }
 
+/**
+ * Pure CSS marquee. Animation runs entirely on the compositor — no
+ * framer-motion subscription, no per-frame JS work. The track is rendered
+ * three times so a -33.333% translation produces a seamless loop.
+ */
 export default function Marquee({
   items,
   speed = 30,
@@ -25,12 +27,9 @@ export default function Marquee({
   showLogos = false,
   variant = 'display',
 }: MarqueeProps) {
-  // Normalize items
   const normalized: MarqueeItem[] = items.map((item) =>
-    typeof item === 'string' ? { label: item } : item
+    typeof item === 'string' ? { label: item } : item,
   );
-
-  // Duplicate items to create seamless loop
   const duplicatedItems = [...normalized, ...normalized, ...normalized];
 
   return (
@@ -42,20 +41,15 @@ export default function Marquee({
         minHeight: '110px',
       }}
     >
-      <motion.div
-        animate={{
-          x: direction === 'left' ? ['0%', '-33.333%'] : ['-33.333%', '0%'],
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
+      <div
+        className="marquee-track"
         style={{
           display: 'flex',
           gap: variant === 'subtle' ? '2.5rem' : '4rem',
           whiteSpace: 'nowrap',
           alignItems: 'center',
+          willChange: 'transform',
+          animation: `${direction === 'left' ? 'marquee-left' : 'marquee-right'} ${speed}s linear infinite`,
         }}
       >
         {duplicatedItems.flatMap((item, index) => {
@@ -73,6 +67,8 @@ export default function Marquee({
                   style={{ width: '70px', height: '70px', objectFit: 'contain', opacity: 0.7 }}
                   className="transition-all duration-300 group-hover:scale-110 group-hover:opacity-100"
                   loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
                 />
               ) : (
                 <span
@@ -105,7 +101,7 @@ export default function Marquee({
 
           return sep ? [word, sep] : [word];
         })}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const POINTER_QUERY = '(hover: hover) and (pointer: fine)';
 
 export default function MagneticCard({
   children,
@@ -9,6 +11,18 @@ export default function MagneticCard({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [interactive, setInteractive] = useState(() =>
+    typeof window === 'undefined' ? true : window.matchMedia(POINTER_QUERY).matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(POINTER_QUERY);
+    const update = () => setInteractive(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 160, damping: 18 });
@@ -18,6 +32,10 @@ export default function MagneticCard({
   const rotateY = useTransform(sx, [-0.5, 0.5], ['-12deg', '12deg']);
   const tx = useTransform(sx, [-0.5, 0.5], ['-16px', '16px']);
   const ty = useTransform(sy, [-0.5, 0.5], ['-16px', '16px']);
+
+  if (!interactive) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div

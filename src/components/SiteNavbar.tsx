@@ -6,6 +6,7 @@ import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle';
 import GlitchText from './ui/GlitchText';
 import LiveClock from './LiveClock';
+import { smoothScrollTo } from './SmoothScroll';
 
 const links = [
   { label: 'About', href: '#about' },
@@ -57,12 +58,7 @@ export default function SiteNavbar() {
     const el = document.getElementById(id);
     if (!el) return;
 
-    if (window.__lenis) {
-      // lock: true blocks wheel/touch until the scroll lands
-      window.__lenis.scrollTo(el, { offset: -100, lock: true });
-    } else {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    smoothScrollTo(el, { offset: -100 });
   };
 
   const handleLogoClick = (event: { preventDefault: () => void }) => {
@@ -77,11 +73,7 @@ export default function SiteNavbar() {
     if (!isHomePage) return;
 
     event.preventDefault();
-    if (window.__lenis) {
-      window.__lenis.scrollTo(0, { lock: true });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    smoothScrollTo(0);
   };
 
   const handleScrollEnd = () => {
@@ -115,7 +107,11 @@ export default function SiteNavbar() {
       .map((link) => document.getElementById(link.href.slice(1)))
       .filter((section): section is HTMLElement => Boolean(section));
 
-    const updateActiveSection = () => {
+    let queued = false;
+    let raf = 0;
+
+    const compute = () => {
+      queued = false;
       if (lockedTargetRef.current) {
         handleScrollEnd();
         return;
@@ -139,11 +135,18 @@ export default function SiteNavbar() {
       setActiveSection(nextActive);
     };
 
-    updateActiveSection();
+    const updateActiveSection = () => {
+      if (queued) return;
+      queued = true;
+      raf = requestAnimationFrame(compute);
+    };
+
+    compute();
     window.addEventListener('scroll', updateActiveSection, { passive: true });
     window.addEventListener('resize', updateActiveSection);
 
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener('scroll', updateActiveSection);
       window.removeEventListener('resize', updateActiveSection);
     };

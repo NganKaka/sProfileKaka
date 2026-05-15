@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Manrope:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -126,6 +126,30 @@
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% { transform: translateY(400px); opacity: 0; }
+}
+
+@keyframes mesh-drift-a {
+  0%, 100% { transform: translate3d(-10%, 0%, 0) scale(1); }
+  50%      { transform: translate3d(10%, 15%, 0) scale(1.2); }
+}
+@keyframes mesh-drift-b {
+  0%, 100% { transform: translate3d(5%, -5%, 0) scale(1.1); }
+  50%      { transform: translate3d(-15%, 10%, 0) scale(0.9); }
+}
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-33.333%, 0, 0); }
+}
+@keyframes marquee-right {
+  from { transform: translate3d(-33.333%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-blob,
+  .marquee-track {
+    animation: none !important;
+  }
 }
 
 .animate-scan {

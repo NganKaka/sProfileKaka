@@ -1,23 +1,15 @@
 import { motion } from 'framer-motion';
-import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
+import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useContentList } from '../hooks/useContent';
+import { loadBlog } from '../lib/contentLoader';
 import { blogPostSchema, type BlogPost } from '../schemas/content';
 import SiteNavbar from '../components/SiteNavbar';
 import SiteFooter from '../components/SiteFooter';
 import SectionHeading from '../components/ui/SectionHeading';
-import { ProjectGridSkeleton } from '../components/LoadingSkeleton';
+
+const posts = loadBlog(blogPostSchema);
 
 export default function Blog() {
-  const { items: posts, loading, error } = useContentList<BlogPost>(
-    [
-      '/content/blog/01-building-my-portfolio.md',
-      '/content/blog/02-skeletons-vs-spinners.md',
-      '/content/blog/03-math-to-code-journey.md',
-    ],
-    blogPostSchema
-  );
-
   return (
     <div className="min-h-screen relative text-on-surface">
       <SiteNavbar />
@@ -29,17 +21,8 @@ export default function Blog() {
           subtitle="Notes on engineering, design, and the craft of building software."
         />
 
-        {loading && <ProjectGridSkeleton count={3} />}
-
-        {error && (
-          <div className="glass-card rounded-2xl p-8 text-center">
-            <p className="text-red-400">Failed to load blog posts.</p>
-          </div>
-        )}
-
-        {!loading && !error && (
-          <div className="grid gap-6 md:grid-cols-2">
-            {posts.map((post, index) => (
+        <div className="grid gap-6 md:grid-cols-2">
+          {posts.map((post, index) => (
               <motion.article
                 key={post.data.slug}
                 initial={{ opacity: 0, y: 20 }}
@@ -110,8 +93,7 @@ export default function Blog() {
                 </Link>
               </motion.article>
             ))}
-          </div>
-        )}
+        </div>
       </main>
 
       <SiteFooter />

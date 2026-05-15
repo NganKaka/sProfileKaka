@@ -1,5 +1,7 @@
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+
+const POINTER_QUERY = '(hover: hover) and (pointer: fine)';
 
 interface TiltCardProps {
   children: ReactNode;
@@ -18,6 +20,17 @@ export default function TiltCard({
   holographic = true,
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [interactive, setInteractive] = useState(() =>
+    typeof window === 'undefined' ? true : window.matchMedia(POINTER_QUERY).matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(POINTER_QUERY);
+    const update = () => setInteractive(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -29,9 +42,6 @@ export default function TiltCard({
   const rotateX = useTransform(ySpring, [-0.5, 0.5], [intensity, -intensity]);
   const rotateY = useTransform(xSpring, [-0.5, 0.5], [-intensity, intensity]);
 
-  // Sheen drives a conic gradient angle (0-360deg) and an opacity bump
-  // when cursor is closer to a corner. Both are derived from the same
-  // springs as the tilt so they move together.
   const sheenAngle = useTransform([xSpring, ySpring], ([sx, sy]) => {
     const ang = (Math.atan2(sy as number, sx as number) * 180) / Math.PI + 180;
     return `${ang}deg`;
@@ -40,6 +50,16 @@ export default function TiltCard({
     const r = Math.min(0.5, Math.hypot(sx as number, sy as number));
     return r * 1.4;
   });
+
+  const sheenBackground = useTransform(
+    sheenAngle,
+    (a) =>
+      `conic-gradient(from ${a}, transparent 0deg, rgba(233,195,73,0.55) 50deg, rgba(34,211,238,0.55) 110deg, rgba(168,85,247,0.55) 170deg, rgba(244,114,182,0.55) 230deg, transparent 290deg, transparent 360deg)`,
+  );
+
+  if (!interactive) {
+    return <div className={`relative ${className}`}>{children}</div>;
+  }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -77,11 +97,7 @@ export default function TiltCard({
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-[inherit] mix-blend-color-dodge"
           style={{
-            background: useTransform(
-              sheenAngle,
-              (a) =>
-                `conic-gradient(from ${a}, transparent 0deg, rgba(233,195,73,0.55) 50deg, rgba(34,211,238,0.55) 110deg, rgba(168,85,247,0.55) 170deg, rgba(244,114,182,0.55) 230deg, transparent 290deg, transparent 360deg)`,
-            ),
+            background: sheenBackground,
             opacity: sheenStrength,
             transform: 'translateZ(60px)',
             filter: 'blur(8px) saturate(1.2)',

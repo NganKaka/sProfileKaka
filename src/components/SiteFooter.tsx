@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Coffee, Facebook, Github, HeartHandshake, Landmark, Mail } from 'lucide-react';
+import { ChevronDown, Coffee, Facebook, Github, HeartHandshake, Landmark, Mail, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { profile } from '../data/profile';
 import FooterChapterBanner from './FooterChapterBanner';
+import ContactForm from './ContactForm';
 
 const iconMap = {
   GitHub: Github,
@@ -12,6 +13,7 @@ const iconMap = {
 
 export default function SiteFooter() {
   const [showSupportOptions, setShowSupportOptions] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
 
   return (
     <footer className="w-full bg-background border-t dark:border-white/10 light:border-black/10 pt-12 pb-28 px-6 md:px-12 mt-8 relative z-50">
@@ -116,6 +118,29 @@ export default function SiteFooter() {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        <div className="w-full max-w-3xl mx-auto">
+          <motion.button
+            type="button"
+            onClick={() => setShowContactForm((prev) => !prev)}
+            whileTap={{ scale: 0.98 }}
+            aria-expanded={showContactForm}
+            className="group mx-auto flex w-full max-w-md items-center justify-between rounded-[28px] border border-primary/25 bg-primary/[0.06] px-6 py-4 text-left text-on-surface shadow-[0_0_25px_rgba(233,195,73,0.10)] backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/10 hover:shadow-[0_0_30px_rgba(233,195,73,0.18)]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-primary transition-all group-hover:scale-105 group-hover:bg-primary/15">
+                <MessageSquare size={20} />
+              </div>
+              <div>
+                <p className="font-headline text-lg font-bold text-on-surface">Send Me a Message</p>
+                <p className="text-xs font-tech uppercase tracking-[0.22em] text-primary/70">Tap to open the form</p>
+              </div>
+            </div>
+            <ChevronDown size={18} className={`text-primary transition-transform duration-300 ${showContactForm ? 'rotate-180' : ''}`} />
+          </motion.button>
+
+          <AnimatePresence>{showContactForm && <ContactForm />}</AnimatePresence>
         </div>
 
       </div>

@@ -19,6 +19,7 @@ export default function CursorTrail() {
   useEffect(() => {
     if (typeof window !== 'undefined' && 'ontouchstart' in window) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -26,6 +27,9 @@ export default function CursorTrail() {
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const targetFps = 30;
+    const minFrame = 1000 / targetFps;
+    let lastFrame = 0;
     let raf = 0;
     let running = false;
 
@@ -61,6 +65,18 @@ export default function CursorTrail() {
     };
 
     const tick = (now: number) => {
+      // 30fps cap — half the redraw cost, indistinguishable visually for a
+      // sparse particle trail.
+      if (now - lastFrame < minFrame) {
+        if (mouseRef.current.active || dotsRef.current.length > 0) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          running = false;
+        }
+        return;
+      }
+      lastFrame = now;
+
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       if (mouseRef.current.active && now - lastSpawnRef.current > SPAWN_INTERVAL) {

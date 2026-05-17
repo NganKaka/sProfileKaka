@@ -1,4 +1,4 @@
-import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText, Search, X } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Code2, ExternalLink, FileText, Maximize2, Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { loadProjects } from '../lib/contentLoader';
@@ -7,6 +7,7 @@ import SectionHeading from './ui/SectionHeading';
 import MagneticCard from './ui/MagneticCard';
 import TiltCard from './ui/TiltCard';
 import { trackProjectClick } from '../lib/analytics';
+import ProjectDetail from './ProjectDetail';
 
 const projectEntries = loadProjects(projectSchema);
 
@@ -31,9 +32,13 @@ function ProjectAction({ href, label, variant, projectTitle }: { href: string; l
   );
 }
 
-function ProjectPreview({ project, featured }: { project: Project; featured: boolean }) {
+function ProjectPreview({ project, featured, layoutKey }: { project: Project; featured: boolean; layoutKey: string }) {
   return (
-    <div className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${featured ? 'min-h-[320px]' : 'min-h-[190px]'}`}>
+    <motion.div
+      layoutId={`project-image-${layoutKey}`}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${featured ? 'min-h-[320px]' : 'min-h-[190px]'}`}
+    >
       <img
         src={project.previewImage}
         alt={`${project.title} preview`}
@@ -45,15 +50,26 @@ function ProjectPreview({ project, featured }: { project: Project; featured: boo
         <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-cyan-100/60">Preview</p>
         <p className="mt-1 font-headline text-xl font-bold text-on-surface">{project.title}</p>
       </div>
-    </div>
+      <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/15 bg-background/70 px-2.5 py-1 font-tech text-[9px] uppercase tracking-[0.16em] text-cyan-100/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm">
+        <Maximize2 size={11} />
+        Open
+      </div>
+    </motion.div>
   );
 }
 
-function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
+function ProjectCard({ project, featured = false, layoutKey, onOpen }: { project: Project; featured?: boolean; layoutKey: string; onOpen: () => void }) {
   return (
     <MagneticCard className={`h-full rounded-[28px] border transition-all ${featured ? 'border-primary/35 bg-primary/8 p-5 shadow-[0_0_34px_rgba(233,195,73,0.16)]' : 'glass-card p-5 hover:border-cyan-300/35'}`}>
       <div className={`grid h-full gap-6 ${featured ? 'lg:grid-cols-[1.08fr_0.92fr]' : ''}`}>
-        <ProjectPreview project={project} featured={featured} />
+        <button
+          type="button"
+          onClick={onOpen}
+          aria-label={`Open ${project.title} details`}
+          className="text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 rounded-2xl"
+        >
+          <ProjectPreview project={project} featured={featured} layoutKey={layoutKey} />
+        </button>
 
         <div className="flex h-full flex-col space-y-5">
           <div className="space-y-3">
@@ -120,6 +136,7 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
 export default function Projects() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [activeProject, setActiveProject] = useState<{ data: Project; key: string } | null>(null);
 
   const projects = projectEntries;
 
@@ -239,7 +256,14 @@ export default function Projects() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <ProjectCard project={featuredProject.data} featured />
+                  <ProjectCard
+                    project={featuredProject.data}
+                    featured
+                    layoutKey={featuredProject.data.title}
+                    onOpen={() =>
+                      setActiveProject({ data: featuredProject.data, key: featuredProject.data.title })
+                    }
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -255,13 +279,28 @@ export default function Projects() {
                     transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <TiltCard intensity={6} className="h-full">
-                      <ProjectCard project={project.data} />
+                      <ProjectCard
+                        project={project.data}
+                        layoutKey={project.data.title}
+                        onOpen={() => setActiveProject({ data: project.data, key: project.data.title })}
+                      />
                     </TiltCard>
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
           </div>
+
+          <AnimatePresence>
+            {activeProject && (
+              <ProjectDetail
+                key={activeProject.key}
+                project={activeProject.data}
+                layoutKey={activeProject.key}
+                onClose={() => setActiveProject(null)}
+              />
+            )}
+          </AnimatePresence>
         </LayoutGroup>
       )}
     </section>

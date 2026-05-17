@@ -1,20 +1,19 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
-export default function SectionHeading({
-  eyebrow,
-  title,
-  subtitle,
-}: {
+interface SectionHeadingProps {
   eyebrow: string;
   title: string;
   subtitle?: string;
-}) {
+}
+
+export default function SectionHeading({ eyebrow, title, subtitle }: SectionHeadingProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
 
   return (
-    <div ref={ref} className="space-y-2">
+    <div ref={ref} className={`section-heading-anchor space-y-2 relative ${isInView ? 'section-entered' : ''}`}>
+      <span aria-hidden className="section-sweep" />
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}

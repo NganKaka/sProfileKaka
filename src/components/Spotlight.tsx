@@ -18,6 +18,8 @@ export default function Spotlight({
 }: SpotlightProps) {
   useEffect(() => {
     if (typeof window !== 'undefined' && 'ontouchstart' in window) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
     const root = document.documentElement;
     let raf = 0;
     let nextX = -1000;

@@ -1,6 +1,7 @@
 import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import SectionHeading from './ui/SectionHeading';
+import SpecSheet from './ui/SpecSheet';
 import { profile } from '../data/profile';
 
 // Note: About component still uses profile.ts for now
@@ -97,9 +98,9 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="glass-card rounded-2xl p-6 md:p-8 grid md:grid-cols-[1.2fr_0.8fr] gap-6"
+          className="glass-card rounded-2xl p-6 md:p-8 grid md:grid-cols-[1.1fr_0.9fr] gap-8"
         >
-          <div className="space-y-4">
+          <div className="space-y-5">
             <p className="text-secondary/90 leading-loose">{profile.about}</p>
             <div className="rounded-2xl border border-primary/15 bg-primary/8 p-4">
               <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-primary">Personal note</p>
@@ -107,16 +108,18 @@ export default function About() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-primary">Quick facts</p>
-            <div className="space-y-2">
-              {profile.stats.map((stat) => (
-                <div key={stat.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-                  <p className="text-xs uppercase tracking-[0.12em] text-secondary/60 font-tech">{stat.label}</p>
-                  <p className="font-headline text-xl font-bold text-on-surface mt-1">{stat.value}</p>
-                </div>
-              ))}
-            </div>
+          <div className="space-y-4">
+            <p className="font-tech text-[10px] uppercase tracking-[0.2em] text-primary">Spec sheet</p>
+            <SpecSheet
+              rows={[
+                { label: 'NAME', value: profile.name, accent: 'gold' },
+                { label: 'ROLE', value: profile.title, accent: 'cyan' },
+                { label: 'LOC', value: profile.location, accent: 'gold' },
+                { label: 'LANG', value: 'Vi · En (IELTS 7.0)', accent: 'cyan' },
+                { label: 'FOCUS', value: 'Frontend · Backend · Product', accent: 'gold' },
+                { label: 'STATUS', value: profile.availability.replace(/\.$/, ''), accent: 'cyan' },
+              ]}
+            />
           </div>
         </motion.div>
 

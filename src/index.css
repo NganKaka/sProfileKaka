@@ -121,6 +121,66 @@
   }
 }
 
+.portrait-brackets {
+  z-index: 5;
+  border-radius: inherit;
+}
+.portrait-brackets .bracket {
+  fill: none;
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+  animation: portrait-bracket-draw 800ms cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+  vector-effect: non-scaling-stroke;
+}
+.portrait-brackets .bracket.gold { stroke: rgba(233, 195, 73, 0.9); }
+.portrait-brackets .bracket.cyan { stroke: rgba(34, 211, 238, 0.85); }
+@keyframes portrait-bracket-draw {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-brackets .bracket {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+.section-heading-anchor {
+  --sweep-x: -100%;
+}
+.section-sweep {
+  pointer-events: none;
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(233, 195, 73, 0.85) 35%,
+    rgba(34, 211, 238, 0.85) 60%,
+    transparent 100%
+  );
+  transform: translate3d(var(--sweep-x), 0, 0);
+  opacity: 0;
+}
+.section-heading-anchor.section-entered .section-sweep {
+  animation: section-sweep-anim 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes section-sweep-anim {
+  0%   { transform: translate3d(-100%, 0, 0); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translate3d(100%, 0, 0); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-heading-anchor.section-entered .section-sweep {
+    animation: none;
+  }
+}
+
 @keyframes scan {
   0% { transform: translateY(-10px); opacity: 0; }
   10% { opacity: 1; }
@@ -197,7 +257,45 @@
 }
 
 .glass-card {
-  @apply backdrop-blur-md border;
+  @apply backdrop-blur-sm border;
+  position: relative;
+}
+
+/* Corner brackets only paint on hover. Gating via background (not opacity)
+   means the GPU has nothing to composite when idle — zero per-frame cost
+   for the 20+ glass-cards on the page. */
+.glass-card::before,
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: none;
+  transition: background 220ms ease;
+}
+
+.glass-card:hover::before {
+  background:
+    linear-gradient(to right, rgba(233,195,73,0.85), rgba(233,195,73,0.85)) top left / 14px 1.5px no-repeat,
+    linear-gradient(to bottom, rgba(233,195,73,0.85), rgba(233,195,73,0.85)) top left / 1.5px 14px no-repeat,
+    linear-gradient(to right, rgba(233,195,73,0.85), rgba(233,195,73,0.85)) bottom right / 14px 1.5px no-repeat,
+    linear-gradient(to bottom, rgba(233,195,73,0.85), rgba(233,195,73,0.85)) bottom right / 1.5px 14px no-repeat;
+}
+
+.glass-card:hover::after {
+  background:
+    linear-gradient(to left, rgba(34,211,238,0.85), rgba(34,211,238,0.85)) top right / 14px 1.5px no-repeat,
+    linear-gradient(to bottom, rgba(34,211,238,0.85), rgba(34,211,238,0.85)) top right / 1.5px 14px no-repeat,
+    linear-gradient(to right, rgba(34,211,238,0.85), rgba(34,211,238,0.85)) bottom left / 14px 1.5px no-repeat,
+    linear-gradient(to bottom, rgba(34,211,238,0.85), rgba(34,211,238,0.85)) bottom left / 1.5px 14px no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card::before,
+  .glass-card::after {
+    transition: none;
+  }
 }
 
 .dark .glass-card {

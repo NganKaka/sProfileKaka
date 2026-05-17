@@ -1,108 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useActiveSection, SECTION_IDS, type SectionId } from '../contexts/ActiveSectionContext';
 import { smoothScrollTo } from './SmoothScroll';
 
-const sections = [
-  { id: 'hero', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'academics', label: 'Academics' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'projects', label: 'Projects' },
-];
+const LABELS: Record<SectionId, string> = {
+  hero: 'Home',
+  about: 'About',
+  academics: 'Academics',
+  experience: 'Experience',
+  skills: 'Skills',
+  projects: 'Projects',
+  testimonials: 'Testimonials',
+};
 
 export default function SectionNavIndicator() {
-  const [activeSection, setActiveSection] = useState('hero');
-  const lockedRef = useRef<string | null>(null);
-  const lockTimeoutRef = useRef<number | null>(null);
-
-  const lockTo = (id: string) => {
-    lockedRef.current = id;
-    setActiveSection(id);
-    if (lockTimeoutRef.current) window.clearTimeout(lockTimeoutRef.current);
-    // Safety release after 3s in case scroll never settles within tolerance
-    lockTimeoutRef.current = window.setTimeout(() => {
-      lockedRef.current = null;
-      lockTimeoutRef.current = null;
-    }, 3000);
-  };
-
-  useEffect(() => {
-    let queued = false;
-    let raf = 0;
-
-    const compute = () => {
-      queued = false;
-      if (lockedRef.current) {
-        const targetEl = document.getElementById(lockedRef.current);
-        if (!targetEl) {
-          lockedRef.current = null;
-        } else {
-          const { top } = targetEl.getBoundingClientRect();
-          if (Math.abs(top) < 80) {
-            lockedRef.current = null;
-            if (lockTimeoutRef.current) {
-              window.clearTimeout(lockTimeoutRef.current);
-              lockTimeoutRef.current = null;
-            }
-          } else {
-            return;
-          }
-        }
-      }
-
-      const marker = window.innerHeight / 2;
-      let nextActive = 'hero';
-
-      for (const section of sections) {
-        const element = document.getElementById(section.id);
-        if (!element) continue;
-        const rect = element.getBoundingClientRect();
-        if (rect.top <= marker) {
-          nextActive = section.id;
-        }
-      }
-
-      setActiveSection(nextActive);
-    };
-
-    const updateActive = () => {
-      if (queued) return;
-      queued = true;
-      raf = requestAnimationFrame(compute);
-    };
-
-    compute();
-    window.addEventListener('scroll', updateActive, { passive: true });
-    window.addEventListener('resize', updateActive);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', updateActive);
-      window.removeEventListener('resize', updateActive);
-      if (lockTimeoutRef.current) window.clearTimeout(lockTimeoutRef.current);
-    };
-  }, []);
+  const { activeId, lockTo } = useActiveSection();
+  const visibleSections = SECTION_IDS.filter((id) => id !== 'testimonials');
 
   return (
     <nav
       aria-label="Section navigation"
       className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-3"
     >
-      {sections.map((section) => {
-        const isActive = activeSection === section.id;
+      {visibleSections.map((id) => {
+        const isActive = activeId === id;
         return (
           <a
-            key={section.id}
-            href={`#${section.id}`}
+            key={id}
+            href={`#${id}`}
             onClick={(e) => {
-              lockTo(section.id);
-              const el = document.getElementById(section.id);
+              const el = document.getElementById(id);
               if (!el) return;
+              lockTo(id);
               e.preventDefault();
               smoothScrollTo(el, { offset: -100 });
             }}
-            aria-label={`Go to ${section.label}`}
+            aria-label={`Go to ${LABELS[id]}`}
             className="group relative flex items-center justify-end gap-3"
           >
             <motion.span
@@ -114,7 +46,7 @@ export default function SectionNavIndicator() {
               transition={{ duration: 0.2 }}
               className="font-tech text-[10px] uppercase tracking-[0.18em] text-primary group-hover:opacity-100 group-hover:translate-x-0"
             >
-              {section.label}
+              {LABELS[id]}
             </motion.span>
             <motion.span
               animate={{

@@ -1,12 +1,13 @@
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle';
 import GlitchText from './ui/GlitchText';
 import LiveClock from './LiveClock';
 import { smoothScrollTo } from './SmoothScroll';
+import { useActiveSection, type SectionId } from '../contexts/ActiveSectionContext';
 
 const links = [
   { label: 'About', href: '#about' },
@@ -18,9 +19,8 @@ const links = [
 
 export default function SiteNavbar() {
   const [open, setOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const lockedTargetRef = useRef<string | null>(null);
-  const lockTimeoutRef = useRef<number | null>(null);
+  const { activeId, lockTo } = useActiveSection();
+  const activeSection = activeId ? `#${activeId}` : '';
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -29,128 +29,28 @@ export default function SiteNavbar() {
     return isHomePage ? hash : `/${hash}`;
   };
 
-  const lockActiveSection = (target: string) => {
-    lockedTargetRef.current = target;
-    setActiveSection(target);
-    if (lockTimeoutRef.current) {
-      window.clearTimeout(lockTimeoutRef.current);
-    }
-    // Long enough that even a top-to-bottom Lenis smooth scroll arrives
-    // before the safety timeout fires; handleScrollEnd will normally clear
-    // it earlier when the target settles in view.
-    lockTimeoutRef.current = window.setTimeout(() => {
-      lockedTargetRef.current = null;
-      lockTimeoutRef.current = null;
-    }, 3000);
-  };
-
   const handleSectionClick = (target: string, event?: { preventDefault: () => void }) => {
-    lockActiveSection(target);
     setOpen(false);
 
-    // Only intercept when we're on the home page - on other pages the
-    // anchor href like "/#about" should just navigate normally.
     if (!isHomePage) return;
     if (!event) return;
 
     event.preventDefault();
-    const id = target.startsWith('#') ? target.slice(1) : target;
+    const id = (target.startsWith('#') ? target.slice(1) : target) as SectionId;
     const el = document.getElementById(id);
     if (!el) return;
 
+    lockTo(id);
     smoothScrollTo(el, { offset: -100 });
   };
 
   const handleLogoClick = (event: { preventDefault: () => void }) => {
-    lockedTargetRef.current = null;
-    if (lockTimeoutRef.current) {
-      window.clearTimeout(lockTimeoutRef.current);
-      lockTimeoutRef.current = null;
-    }
-    setActiveSection('');
     setOpen(false);
-
     if (!isHomePage) return;
 
     event.preventDefault();
     smoothScrollTo(0);
   };
-
-  const handleScrollEnd = () => {
-    if (!lockedTargetRef.current) return;
-    const targetElement = document.getElementById(lockedTargetRef.current.slice(1));
-    if (!targetElement) {
-      lockedTargetRef.current = null;
-      return;
-    }
-
-    const { top } = targetElement.getBoundingClientRect();
-    if (Math.abs(top - 112) < 24) {
-      lockedTargetRef.current = null;
-      if (lockTimeoutRef.current) {
-        window.clearTimeout(lockTimeoutRef.current);
-        lockTimeoutRef.current = null;
-      }
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (lockTimeoutRef.current) {
-        window.clearTimeout(lockTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const sections = links
-      .map((link) => document.getElementById(link.href.slice(1)))
-      .filter((section): section is HTMLElement => Boolean(section));
-
-    let queued = false;
-    let raf = 0;
-
-    const compute = () => {
-      queued = false;
-      if (lockedTargetRef.current) {
-        handleScrollEnd();
-        return;
-      }
-
-      const marker = 140;
-      let nextActive = '';
-
-      for (const section of sections) {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= marker) {
-          nextActive = `#${section.id}`;
-        }
-      }
-
-      if (window.scrollY < 120) {
-        setActiveSection('');
-        return;
-      }
-
-      setActiveSection(nextActive);
-    };
-
-    const updateActiveSection = () => {
-      if (queued) return;
-      queued = true;
-      raf = requestAnimationFrame(compute);
-    };
-
-    compute();
-    window.addEventListener('scroll', updateActiveSection, { passive: true });
-    window.addEventListener('resize', updateActiveSection);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', updateActiveSection);
-      window.removeEventListener('resize', updateActiveSection);
-    };
-  }, []);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-lg border-b border-white/5">
@@ -165,6 +65,17 @@ export default function SiteNavbar() {
               sProfileKaka
             </Link>
             <LiveClock />
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+              }}
+              aria-label="Open command palette"
+              className="hidden md:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-tech text-[10px] uppercase tracking-[0.16em] text-secondary/55 hover:border-cyan-300/40 hover:text-cyan-200 transition-colors"
+            >
+              <span>Press</span>
+              <kbd className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-cyan-200">⌘K</kbd>
+            </button>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -203,16 +114,6 @@ export default function SiteNavbar() {
               <GlitchText>Blog</GlitchText>
             </Link>
             <ThemeToggle />
-            <motion.a
-              href={profile.tripSiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.96 }}
-              className="hidden sm:inline-flex shimmer-sweep bg-primary text-background px-6 py-2 rounded-lg text-xs font-bold tracking-wide shadow-[0_0_20px_rgba(233,195,73,0.6)] hover:shadow-[0_0_30px_rgba(233,195,73,1)] border border-primary/50 transition-shadow cursor-pointer"
-            >
-              <span className="relative z-10">Visit sTripKaka</span>
-            </motion.a>
           </div>
 
           <motion.button

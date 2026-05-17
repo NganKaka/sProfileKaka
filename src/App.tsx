@@ -9,8 +9,10 @@ import RouteTransition from './components/RouteTransition';
 import CursorTrail from './components/CursorTrail';
 import FilmGrain from './components/FilmGrain';
 import ScrollVignette from './components/ScrollVignette';
+import CommandPaletteHost from './components/CommandPaletteHost';
 import Home from './pages/Home';
 import NotFound from './components/NotFound';
+import { ActiveSectionProvider } from './contexts/ActiveSectionContext';
 
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
@@ -35,15 +37,18 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <SmoothScroll />
-        <ScrollProgress />
-        <ScrollVignette />
-        <FilmGrain />
-        <Spotlight />
-        <CursorTrail />
-        <AnimatePresence mode="wait">
-          <AnimatedRoutes />
-        </AnimatePresence>
+        <ActiveSectionProvider>
+          <SmoothScroll />
+          <ScrollProgress />
+          <ScrollVignette />
+          <FilmGrain />
+          <Spotlight />
+          <CursorTrail />
+          <CommandPaletteHost />
+          <AnimatePresence mode="wait">
+            <AnimatedRoutes />
+          </AnimatePresence>
+        </ActiveSectionProvider>
       </BrowserRouter>
     </ErrorBoundary>
   );

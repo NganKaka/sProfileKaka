@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Coffee, Facebook, Github, HeartHandshake, Landmark, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { profile } from '../data/profile';
+import FooterChapterBanner from './FooterChapterBanner';
 
 const iconMap = {
   GitHub: Github,
@@ -15,6 +16,8 @@ export default function SiteFooter() {
   return (
     <footer className="w-full bg-background border-t dark:border-white/10 light:border-black/10 pt-12 pb-28 px-6 md:px-12 mt-8 relative z-50">
       <div className="max-w-5xl mx-auto flex flex-col items-center gap-6 text-center">
+        <FooterChapterBanner />
+
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef } from 'react';
 
-const PARTICLE_COUNT = 32;
+const PARTICLE_COUNT = 20;
 const MOUSE_RADIUS = 180;
 const PULL_STRENGTH = 0.04;
 const MAX_LINK_DIST = 120;

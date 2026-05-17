@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { SectionTransition } from '../components/PageTransition';
 import SectionNavIndicator from '../components/SectionNavIndicator';
+import ChapterLabel from '../components/ChapterLabel';
 import Constellations from '../components/Constellations';
 import SiteNavbar from '../components/SiteNavbar';
 import Hero from '../components/Hero';
@@ -56,6 +57,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative text-on-surface selection:bg-primary/30 selection:text-primary overflow-hidden">
       <SectionNavIndicator />
+      <ChapterLabel />
 
       <a
         href="#main-content"

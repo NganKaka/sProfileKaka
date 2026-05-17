@@ -3,13 +3,14 @@ import { Facebook, Github, Mail, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { profile } from '../data/profile';
 import TerminalBoot from './ui/TerminalBoot';
-import TypingText from './ui/TypingText';
+import NameDecode from './ui/NameDecode';
 import GradientText from './ui/GradientText';
 import CursorAware from './ui/CursorAware';
 import ConfettiBurst from './ui/ConfettiBurst';
 import SplitFlapCounter from './ui/SplitFlapCounter';
 import FadeInImage from '../lib/FadeInImage';
 import MorphingBlob from './MorphingBlob';
+import PortraitBrackets from './ui/PortraitBrackets';
 import { smoothScrollTo } from './SmoothScroll';
 
 export default function Hero({ onImageModalChange }: { onImageModalChange?: (open: boolean) => void }) {
@@ -43,7 +44,7 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
       <div className="space-y-7">
         <div className="space-y-2">
           <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
-            <TypingText text={profile.name} speed={80} delay={300} />
+            <NameDecode text={profile.name} duration={750} charLockDuration={280} />
           </h1>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -127,7 +128,8 @@ export default function Hero({ onImageModalChange }: { onImageModalChange?: (ope
         transition={{ opacity: { duration: 0.6, ease: 'easeOut' }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
         className="relative mx-auto w-full max-w-md"
       >
-        <div className="glass-card rounded-3xl p-4 md:p-5 ambient-shadow">
+        <div className="glass-card rounded-3xl p-4 md:p-5 ambient-shadow relative">
+          <PortraitBrackets />
           <button
             type="button"
             onClick={() => setShowProfileImage(true)}
